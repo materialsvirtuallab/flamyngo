@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}{{db_name}} Query{% endblock %}
+
+{% block top_javascript %}
+<script src="{{ url_for('static', filename='js/highcharts.js') }}"></script>
+<script type="text/javascript">
+$(function() {
+    $('input[type=submit]').button();
+    $('#results-table').DataTable();
+  });
+</script>
+{% endblock %}
+
+{%  block css %}
+<link rel=stylesheet type=text/css
+          href="{{ url_for('static', filename='index.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<h1>Query the {{collection_name}} collection</h1>
+
+<form action="/query" method="post" name="query">
+<p id="query"><input type="text" name="search_string"
+                     placeholder="Type query..." size="50"></p>
+<p>
+<input type="submit" name="submit" value="Search">
+</p>
+</form>
+
+{% if results %}
+
+<h1>Results</h1>
+
+<table id="results-table" class="display">
+    <thead>
+    <tr>
+        {% for f in fields %}
+        <th>{{f}}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for r in results %}
+    <tr>
+        {% for f in fields %}
+            {% if f == unique_key %}
+                <td class="centered">
+                    <a href="/doc/{{r[f]}}">{{r[f]}}</a></td>
+            {% else %}
+                <td class="centered">{{r[f]}}</td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endif %}
+
+{% endblock %}

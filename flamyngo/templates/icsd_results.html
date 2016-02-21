@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}Results{% endblock %}
+
+{% block top_javascript %}
+
+<script>
+$(document).ready(function(){
+    $('#results-table').DataTable({
+    "pageLength": 100
+    });
+});
+</script>
+
+{% endblock %}
+
+{%  block css %}
+
+{%  endblock %}
+
+{% block content %}
+
+<h1>Results</h1>
+
+<p>Go back to <a href="/icsd/query">search</a></p>
+
+<p>If a material is invalid, it usually means either the structure cannot be
+    constructed, or the ICSD formula and the actual formula constructed from
+    the structure do not agree. The latter is usually because of missing atoms,
+    such as H.</p>
+
+<table id="results-table" class="display">
+    <thead>
+    <tr>
+        <th>Formula</th>
+        <th>ICSD Formula</th>
+        <th>Spacegroup</th>
+        <th>ICSD IDs</th>
+        <th>MP id</th>
+        <th>Ehull (eV)</th>
+        <th>cif</th>
+        <th>Ordered?</th>
+        <th>Valid?</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for d in materials %}
+    <tr>
+        <td class="centered">{{d.pretty_formula|formula}}</td>
+        <td class="centered">{{d.icsd_pretty_formula|formula}}</td>
+        <td class="centered">
+            {% if "spacegroup" in d %}
+                {{d.spacegroup.symbol|spacegroup}}
+            {% endif %}
+        </td>
+        <td class="centered">
+            {% for icsd_id in d.icsd_ids %}
+                <a href="/icsd/{{icsd_id}}/details" target="_blank">{{icsd_id}}</a>
+            {% endfor %}
+        </td>
+        <td class="centered">
+            {% if "mp" in d %}
+                <a href="https://www.materialsproject.org/materials/{{d.mp_id}}"
+                   target="_blank">{{d.mp.id}}</a>
+            {% endif %}
+        </td>
+        <td class="centered">
+            {% if "mp" in d %}
+                {{'%0.3f' % d.mp.e_above_hull }}
+            {% endif %}
+        </td>
+        <td>
+            <a href="/icsd/{{d.icsd_ids[0]}}/cif">cif</a>
+        </td>
+        <td class="centered">
+            {% if "is_ordered" in d %}
+                {{d.is_ordered}}
+            {% endif %}
+        </td>
+        <td>
+            {{d.is_valid}}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

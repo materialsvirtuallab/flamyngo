@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% block title %}Results{% endblock %}
+
+{% block top_javascript %}
+
+<script>
+$(document).ready(function(){
+    $('#results-table').DataTable();
+});
+</script>
+
+{% endblock %}
+
+{%  block css %}
+
+{%  endblock %}
+
+{% block content %}
+
+<h1>Results</h1>
+
+<p>Go back to <a href="/md/query">search</a></p>
+
+<table id="results-table" class="display">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>MD id</th>
+        <th>Config ID</th>
+        <th>Ehull</th>
+        <th>Transformations</th>
+        <th>Settings</th>
+        <th>D<sub>300K (cm<sup>2</sup>/s)</sub></th>
+        <th>S<sub>300K</sub> (mS/cm)</th>
+        <th>Trajectories</th>
+        <th>Arrhenius</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for d in md %}
+    {% if "configs" in d %}
+    {% for c in d.configs %}
+    <tr>
+        <td class="centered">{{d.pretty_formula|formula}}</td>
+        <td class="centered">{{d.md_id}}</td>
+        <td class="centered">
+            {{c.config_id}} <a href="/md/summary/{{d.md_id}}/{{c.config_id}}">summ.</a>
+        </td>
+        <td>
+            {% if 'e_above_hull' in d %}
+                {{ "%.3f" % d.e_above_hull }}
+            {% endif %}
+        </td>
+        <td class="centered">
+            {% for h in c.transformed_structure.history %}
+                {% if 'name' in h %}
+                    {{ h.name }} : {{ h.init_args }} <br>
+                {% endif %}
+            {% endfor %}
+        </td>
+        <td>
+            {% for k, v in c.user_incar_settings.items() %}
+                {{k}} : {{v}} <br>
+            {% endfor %}
+        </td>
+        <td>
+            {% if 'analysis' in c %}
+                 {{"%.3g"|format(c["analysis"]["D@300K"])}} 
+            {% endif %}
+        </td>
+        <td>
+            {% if 'analysis' in c %}
+                {{"%.3g"|format(c["analysis"]["S@300K"])}} 
+            {% endif %}
+        </td>
+        <td>
+            {% if 'analysis' in c %}
+                {% for t, link in c.msd_links.items() %}
+                    <a href="{{link}}">{{t}}</a><br>
+                {% endfor %}
+            {% endif %}
+        </td>
+        <td>
+            {% if 'analysis' in c %}
+                <a href="{{c.arrhenius_link}}">Arrhenius Plot</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
