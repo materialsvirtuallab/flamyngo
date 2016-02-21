@@ -1,7 +1,4 @@
 import json
-import random
-import string
-import StringIO
 import re
 import os
 
@@ -26,12 +23,6 @@ DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
 COLL = DB[SETTINGS["db"]["collection"]]
 
 
-import pprint
-
-pprint.pprint(SETTINGS)
-pprint.pprint(COLL.find_one({}).keys())
-
-
 @app.route('/', methods=['GET'])
 def index():
     return make_response(render_template(
@@ -46,7 +37,6 @@ def query():
         if re.match(r'%s' % regex[1], search_string):
             criteria[regex[0]] = parse_criteria(search_string, regex[2])
             break
-    print(criteria)
     results = list(COLL.find(criteria, projection=SETTINGS["summary"]))
     return make_response(render_template(
         'index.html', collection_name=SETTINGS["db"]["collection"],
@@ -59,9 +49,7 @@ def query():
 def get_doc(uid):
     criteria = {
         SETTINGS["unique_key"]: parse_criteria(uid, SETTINGS["unique_key_type"])}
-    print(criteria)
     doc = COLL.find_one(criteria)
-    pprint.pprint(doc)
     return jsonify(jsanitize(doc))
 
 
