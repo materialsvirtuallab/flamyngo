@@ -11,6 +11,7 @@ from flask import render_template, request, make_response, jsonify
 
 from flamyngo import app
 
+from bson.objectid import ObjectId
 
 module_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -36,6 +37,8 @@ def query():
         if re.match(r'%s' % regex[1], search_string):
             criteria[regex[0]] = parse_criteria(search_string, regex[2])
             break
+    if not criteria:
+        criteria = json.loads(search_string)
     results = list(COLL.find(criteria, projection=SETTINGS["summary"]))
     return make_response(render_template(
         'index.html', collection_name=SETTINGS["db"]["collection"],
@@ -61,6 +64,8 @@ def parse_criteria(val, vtype):
         return float(val)
     elif vtype == "str":
         return str(val)
+    elif vtype == "objectid":
+        return ObjectId(val)
     else:
         return json.loads(val)
 
