@@ -7,8 +7,7 @@ from pymongo import MongoClient
 from monty.serialization import loadfn
 from monty.json import jsanitize
 
-from flask import render_template, request, redirect, make_response,\
-    session, jsonify, Markup, Response
+from flask import render_template, request, make_response, jsonify
 
 from flamyngo import app
 
@@ -50,7 +49,9 @@ def get_doc(uid):
     criteria = {
         SETTINGS["unique_key"]: parse_criteria(uid, SETTINGS["unique_key_type"])}
     doc = COLL.find_one(criteria)
-    return jsonify(jsanitize(doc))
+    return make_response(render_template(
+        'doc.html', doc=json.dumps(jsanitize(doc)))
+    )
 
 
 def parse_criteria(val, vtype):
