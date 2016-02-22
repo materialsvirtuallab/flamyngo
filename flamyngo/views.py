@@ -7,7 +7,7 @@ from pymongo import MongoClient
 from monty.serialization import loadfn
 from monty.json import jsanitize
 
-from flask import render_template, request, make_response, jsonify
+from flask import render_template, request, make_response
 
 from flamyngo import app
 

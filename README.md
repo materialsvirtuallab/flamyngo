@@ -45,15 +45,18 @@ query:
   - [last_name, '^[A-Za-z]+$', str]
   - [phone_number, '^[0-9]+$', int]
 
-# A default list of projections to display as a table.
+# A default list of projections to display as a table. Only keys in the root of 
+# the document is supported right now.
 summary:
   - _id
   - first_name
   - last_name
   - phone_number
 
-# The following defines unique identifiers for each doc. This allows each specific doc 
-# to be queried and displayed using this key.
+# The following defines unique identifiers for each doc. This allows each
+# specific doc to be queried and displayed using this key. If this key is 
+# present in the default list of projections, a link will be created to each
+# unique document.
 unique_key: _id
 unique_key_type: objectid
 ```

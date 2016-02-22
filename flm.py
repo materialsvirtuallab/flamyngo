@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-"""
-TODO: Modify module doc.
-"""
+import os
+import argparse
 
 __author__ = "Shyue Ping Ong"
 __copyright__ = "Copyright 2012, The Materials Virtual Lab"
@@ -11,14 +10,12 @@ __maintainer__ = "Shyue Ping Ong"
 __email__ = "shyuep@gmail.com"
 __date__ = "7/30/14"
 
-import os
-import argparse
-
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="""flamyngo is a basic Flask frontend for querying MongoDB collections""",
+        description="""flamyngo is a basic Flask frontend for querying
+        MongoDB collections.""",
         epilog="Author: Shyue Ping Ong")
 
     parser.add_argument(
