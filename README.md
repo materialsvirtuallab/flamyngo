@@ -15,7 +15,7 @@ Clone or download the code.
 In the root directory, run:
 
 ```bash
-python --config <path/to/config.yaml> flm.py
+python flm.py --config <path/to/config.yaml>
 ```
 
 If `--config` is not provided, it defaults to `$HOME/.flamyngo.yaml`.
