@@ -21,38 +21,42 @@ CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"])
 DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
-COLL = DB[SETTINGS["db"]["collection"]]
-
+CNAMES = [d["name"] for d in SETTINGS["collections"]]
+CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 
 @app.route('/', methods=['GET'])
 def index():
-    return make_response(render_template(
-        'index.html', collection_name=SETTINGS["db"]["collection"]))
+    return make_response(render_template('index.html', collections=CNAMES))
 
 
 @app.route('/query', methods=['POST'])
 def query():
+    cname = request.form.get("collection")
     search_string = request.form.get("search_string")
+    settings = CSETTINGS[cname]
+    
     criteria = {}
-    for regex in SETTINGS["query"]:
+    for regex in settings["query"]:
         if re.match(r'%s' % regex[1], search_string):
             criteria[regex[0]] = parse_criteria(search_string, regex[2])
             break
     if not criteria:
         criteria = json.loads(search_string)
-    results = list(COLL.find(criteria, projection=SETTINGS["summary"]))
+    results = list(DB[cname].find(criteria, projection=settings["summary"]))
     return make_response(render_template(
-        'index.html', collection_name=SETTINGS["db"]["collection"],
-        results=results, fields=SETTINGS["summary"],
-        unique_key=SETTINGS["unique_key"])
+        'index.html', collection_name=cname,
+        results=results, fields=settings["summary"],
+        unique_key=settings["unique_key"],
+        collections=CNAMES)
     )
 
 
-@app.route('/doc/<string:uid>')
-def get_doc(uid):
+@app.route('/<string:collection_name>/doc/<string:uid>')
+def get_doc(collection_name, uid):
+    settings = CSETTINGS[collection_name]
     criteria = {
-        SETTINGS["unique_key"]: parse_criteria(uid, SETTINGS["unique_key_type"])}
-    doc = COLL.find_one(criteria)
+        settings["unique_key"]: parse_criteria(uid, settings["unique_key_type"])}
+    doc = DB[collection_name].find_one(criteria)
     return make_response(render_template(
         'doc.html', doc=json.dumps(jsanitize(doc)))
     )

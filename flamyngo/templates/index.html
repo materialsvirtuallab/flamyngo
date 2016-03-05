@@ -6,6 +6,7 @@
 <script type="text/javascript">
 $(function() {
     $('input[type=submit]').button();
+    $("#select-collection" ).selectmenu();
     $('#results-table').DataTable();
   });
 </script>
@@ -18,11 +19,19 @@ $(function() {
 
 
 {% block content %}
-<h1>Query the {{collection_name}} collection</h1>
+<h1>Query</h1>
 
 <form action="/query" method="post" name="query">
-<p id="query"><input type="text" name="search_string"
-                     placeholder="Type query..." size="50"></p>
+<p>
+<select name="collection" id="select-collection">
+    {% for c in collections %}
+    <option value="{{c}}">{{c}}</option>
+    {% endfor %}
+</select>
+</p>
+<p id="query">
+<input type="text" name="search_string"
+               placeholder="Type query..." size="50"></p>
 <p>
 <input type="submit" name="submit" value="Search">
 </p>
@@ -46,7 +55,7 @@ $(function() {
         {% for f in fields %}
             {% if f == unique_key %}
                 <td class="centered">
-                    <a href="/doc/{{r[f]}}">{{r[f]}}</a></td>
+                    <a href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]}}</a></td>
             {% else %}
                 <td class="centered">{{r[f]}}</td>
             {% endif %}

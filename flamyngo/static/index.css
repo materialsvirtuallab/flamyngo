@@ -21,6 +21,10 @@ input{
 	font-size: 1.2em;
 }
 
+select{
+    width: 300px;
+}
+
 p{
 	text-align: center;
 }
