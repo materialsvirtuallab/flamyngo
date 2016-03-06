@@ -55,7 +55,14 @@ $(function() {
         {% for f in fields %}
             {% if f == unique_key %}
                 <td class="centered">
-                    <a href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]}}</a></td>
+                    {% if r[f] is iterable %}
+                    {% for did in r[f] %}
+                        <a href="/{{collection_name}}/doc/{{did}}">{{did}}</a>
+                    {% endfor %}
+                    {% else %}
+                    <a href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]}}</a>
+                    {% endif %}
+                    </td>
             {% else %}
                 <td class="centered">{{r[f]}}</td>
             {% endif %}
