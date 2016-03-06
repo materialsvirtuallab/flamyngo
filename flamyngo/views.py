@@ -59,7 +59,8 @@ def get_doc(collection_name, uid):
         settings["unique_key"]: parse_criteria(uid, settings["unique_key_type"])}
     doc = DB[collection_name].find_one(criteria)
     return make_response(render_template(
-        'doc.html', doc=json.dumps(jsanitize(doc)))
+        'doc.html', doc=json.dumps(jsanitize(doc)),
+        collection_name=collection_name, doc_id=uid)
     )
 
 
