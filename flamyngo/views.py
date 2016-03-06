@@ -34,7 +34,7 @@ def query():
     cname = request.form.get("collection")
     search_string = request.form.get("search_string")
     settings = CSETTINGS[cname]
-    
+
     criteria = {}
     for regex in settings["query"]:
         if re.match(r'%s' % regex[1], search_string):
@@ -47,6 +47,7 @@ def query():
         'index.html', collection_name=cname,
         results=results, fields=settings["summary"],
         unique_key=settings["unique_key"],
+        active_collection=cname,
         collections=CNAMES)
     )
 

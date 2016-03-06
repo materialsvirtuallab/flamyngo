@@ -25,7 +25,11 @@ $(function() {
 <p>
 <select name="collection" id="select-collection">
     {% for c in collections %}
-    <option value="{{c}}">{{c}}</option>
+    {% if c == active_collection %}
+        <option value="{{c}}" selected="selected">{{c}}</option>
+    {% else %}
+        <option value="{{c}}">{{c}}</option>
+    {% endif %}
     {% endfor %}
 </select>
 </p>
