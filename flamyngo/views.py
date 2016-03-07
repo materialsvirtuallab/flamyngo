@@ -24,15 +24,16 @@ if "username" in SETTINGS["db"]:
 CNAMES = [d["name"] for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 
+
 @app.route('/', methods=['GET'])
 def index():
     return make_response(render_template('index.html', collections=CNAMES))
 
 
-@app.route('/query', methods=['POST'])
+@app.route('/query', methods=['GET'])
 def query():
-    cname = request.form.get("collection")
-    search_string = request.form.get("search_string")
+    cname = request.args.get("collection")
+    search_string = request.args.get("search_string")
     settings = CSETTINGS[cname]
 
     criteria = {}

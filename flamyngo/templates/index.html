@@ -21,7 +21,7 @@ $(function() {
 {% block content %}
 <h1>Query</h1>
 
-<form action="/query" method="post" name="query">
+<form action="/query" method="get" name="query">
 <p>
 <select name="collection" id="select-collection">
     {% for c in collections %}
