@@ -82,14 +82,11 @@ def get_doc(collection_name, uid):
 
 def parse_criteria(val, vtype):
     toks = vtype.rsplit(".", 1)
-    print(toks)
     if len(toks) == 1:
         func = getattr(__import__("__builtin__"), toks[0])
     else:
         mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
         func = getattr(mod, toks[1])
-    print(func)
-
     return func(val)
 
 

@@ -61,5 +61,5 @@ collections:
     # present in the default list of projections, a link will be created to each
     # unique document.
     unique_key: _id
-    unique_key_type: objectid
+    unique_key_type: bson.objectid.ObjectId
 ```
