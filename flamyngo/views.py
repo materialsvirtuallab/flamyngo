@@ -46,8 +46,9 @@ def query():
         processed = {}
         for k in settings["summary"]:
             toks = k.split(".")
-            val = r[toks[0]]
+
             try:
+                val = r[toks[0]]
                 for t in toks[1:]:
                     try:
                         val = val[t]
@@ -56,7 +57,7 @@ def query():
                         val = val[int(t)]
             except:
                 # Return the base value if we can descend into the data.
-                pass
+                val = None
             processed[k] = val
         results.append(processed)
     return make_response(render_template(
