@@ -43,7 +43,24 @@ def query():
             break
     if not criteria:
         criteria = json.loads(search_string)
-    results = list(DB[cname].find(criteria, projection=settings["summary"]))
+    results = []
+    for r in DB[cname].find(criteria, projection=settings["summary"]):
+        processed = {}
+        for k in settings["summary"]:
+            toks = k.split(".")
+            val = r[toks[0]]
+            try:
+                for t in toks[1:]:
+                    try:
+                        val = val[t]
+                    except KeyError:
+                        # Handle integer indices
+                        val = val[int(t)]
+            except:
+                # Return the base value if we can descend into the data.
+                pass
+            processed[k] = val
+        results.append(processed)
     return make_response(render_template(
         'index.html', collection_name=cname,
         results=results, fields=settings["summary"],
