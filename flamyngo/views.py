@@ -11,8 +11,6 @@ from flask import render_template, request, make_response
 
 from flamyngo import app
 
-from bson.objectid import ObjectId
-
 module_path = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -83,16 +81,16 @@ def get_doc(collection_name, uid):
 
 
 def parse_criteria(val, vtype):
-    if vtype == "int":
-        return int(val)
-    elif vtype == "float":
-        return float(val)
-    elif vtype == "str":
-        return str(val)
-    elif vtype == "objectid":
-        return ObjectId(val)
+    toks = vtype.rsplit(".", 1)
+    print(toks)
+    if len(toks) == 1:
+        func = getattr(__import__("__builtin__"), toks[0])
     else:
-        return json.loads(val)
+        mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
+        func = getattr(mod, toks[1])
+    print(func)
+
+    return func(val)
 
 
 if __name__ == "__main__":
