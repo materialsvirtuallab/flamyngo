@@ -1,12 +1,6 @@
-@import url(http://fonts.googleapis.com/css?family=Roboto:regular,bold);
-
 body {
-    font-family: "Roboto","Tahoma","Verdana","Arial","sans-serif";
+    font-family: "Arial","sans-serif";
     font-size: 1.1em;
-}
-
-a {
-    color: #335E79;
 }
 
 p.message {
@@ -55,15 +49,6 @@ h1, h2 {
     border-bottom-width: 1px;
 }
 
-#content{
-    width: 80%;
-    margin-right: auto;
-    margin-left: auto;
-    padding-top: 40px;
-    font-size: 1.1em;
-}
-
-
 #menu {
     width: 80%;
     height: 40px;
@@ -111,32 +96,10 @@ h1, h2 {
 
 
 #content{
-    max-width: 1024px;
+    min-width: 1024px;
     width: 80%;
     margin-right: auto;
     margin-left: auto;
     padding-top: 40px;
     font-size: 1.1em;
-}
-
-table{
-    cellspacing: 0; 
-}
-
-.pretty-table th{
-    background: #000;
-    color: #fff;
-    padding: 5px;
-}
-
-.pretty-table tr:nth-child(even) {
-    background: #CCC
-}
-
-.pretty-table tr:nth-child(odd) {
-    background: #eee
-}
-
-.pretty-table td {
-    padding: 5px;
 }

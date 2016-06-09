@@ -59,10 +59,10 @@ $(function() {
         {% for f in fields %}
             {% if f == unique_key %}
                 <td class="centered">
-                    <a href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]}}</a>
+                    <a href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]|safe}}</a>
                 </td>
             {% else %}
-                <td class="centered">{{r[f]}}</td>
+                <td class="centered">{{r[f]|safe}}</td>
             {% endif %}
         {% endfor %}
     </tr>

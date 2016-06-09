@@ -31,6 +31,8 @@ db:
   password: password
   database: mydb
 
+# List of collection settings. Note that more than one collection is supported,
+# though only one collection can be queried at any one time.
 collections:
   -
     name: mycoll
