@@ -72,16 +72,17 @@ def query():
     criteria = {}
     for regex in settings["query"]:
         if re.match(r'%s' % regex[1], search_string):
-            criteria[regex[0]] = parse_criteria(search_string, regex[2])
+            criteria[regex[0]] = process(search_string, regex[2])
             break
     if not criteria:
         criteria = json.loads(search_string)
     results = []
-    for r in DB[cname].find(criteria, projection=settings["summary"]):
+    projection = [t[0] for t in settings["summary"]]
+    for r in DB[cname].find(criteria, projection=projection):
         processed = {}
-        for k in settings["summary"]:
+        for m in settings["summary"]:
+            k, v = m
             toks = k.split(".")
-
             try:
                 val = r[toks[0]]
                 for t in toks[1:]:
@@ -90,14 +91,16 @@ def query():
                     except KeyError:
                         # Handle integer indices
                         val = val[int(t)]
-            except:
+                val = process(val, v.strip())
+            except Exception as ex:
+                print(str(ex))
                 # Return the base value if we can descend into the data.
                 val = None
             processed[k] = val
         results.append(processed)
     return make_response(render_template(
         'index.html', collection_name=cname,
-        results=results, fields=settings["summary"],
+        results=results, fields=projection,
         unique_key=settings["unique_key"],
         active_collection=cname,
         collections=CNAMES)
@@ -109,7 +112,7 @@ def query():
 def get_doc(collection_name, uid):
     settings = CSETTINGS[collection_name]
     criteria = {
-        settings["unique_key"]: parse_criteria(uid, settings["unique_key_type"])}
+        settings["unique_key"]: process(uid, settings["unique_key_type"])}
     doc = DB[collection_name].find_one(criteria)
     return make_response(render_template(
         'doc.html', doc=json.dumps(jsanitize(doc)),
@@ -117,10 +120,10 @@ def get_doc(collection_name, uid):
     )
 
 
-def parse_criteria(val, vtype):
+def process(val, vtype):
     toks = vtype.rsplit(".", 1)
     if len(toks) == 1:
-        func = getattr(__import__("__builtin__"), toks[0])
+        func = globals()["__builtins__"][toks[0]]
     else:
         mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
         func = getattr(mod, toks[1])
