@@ -66,44 +66,50 @@ def index():
 @requires_auth
 def query():
     cname = request.args.get("collection")
-    search_string = request.args.get("search_string")
     settings = CSETTINGS[cname]
-
-    criteria = {}
-    for regex in settings["query"]:
-        if re.match(r'%s' % regex[1], search_string):
-            criteria[regex[0]] = process(search_string, regex[2])
-            break
-    if not criteria:
-        criteria = json.loads(search_string)
-    results = []
+    search_string = request.args.get("search_string")
     projection = [t[0] for t in settings["summary"]]
-    for r in DB[cname].find(criteria, projection=projection):
-        processed = {}
-        for m in settings["summary"]:
-            k, v = m
-            toks = k.split(".")
-            try:
-                val = r[toks[0]]
-                for t in toks[1:]:
-                    try:
-                        val = val[t]
-                    except KeyError:
-                        # Handle integer indices
-                        val = val[int(t)]
-                val = process(val, v.strip())
-            except Exception as ex:
-                print(str(ex))
-                # Return the base value if we can descend into the data.
-                val = None
-            processed[k] = val
-        results.append(processed)
+
+    if search_string.strip() != "":
+        criteria = {}
+        for regex in settings["query"]:
+            if re.match(r'%s' % regex[1], search_string):
+                criteria[regex[0]] = process(search_string, regex[2])
+                break
+        if not criteria:
+            criteria = json.loads(search_string)
+        results = []
+        for r in DB[cname].find(criteria, projection=projection):
+            processed = {}
+            for m in settings["summary"]:
+                k, v = m
+                toks = k.split(".")
+                try:
+                    val = r[toks[0]]
+                    for t in toks[1:]:
+                        try:
+                            val = val[t]
+                        except KeyError:
+                            # Handle integer indices
+                            val = val[int(t)]
+                    val = process(val, v.strip())
+                except Exception as ex:
+                    print(str(ex))
+                    # Return the base value if we can descend into the data.
+                    val = None
+                processed[k] = val
+            results.append(processed)
+        error_message = None
+    else:
+        results = []
+        error_message = "No results!"
     return make_response(render_template(
         'index.html', collection_name=cname,
         results=results, fields=projection,
         unique_key=settings["unique_key"],
         active_collection=cname,
-        collections=CNAMES)
+        collections=CNAMES,
+        error_message=error_message)
     )
 
 

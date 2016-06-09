@@ -16,7 +16,7 @@ with open(os.path.join(SETUP_PTH, "README.md")) as f:
 setup(
     name="flamyngo",
     packages=find_packages(),
-    version="0.1.1",
+    version="0.1.2",
     install_requires=["flask", "pyyaml", "monty>=0.7.0", "pymongo"],
     package_data={"flamyngo": ["static/*.*", "static/js/*.*",
                                "templates/*"]},
