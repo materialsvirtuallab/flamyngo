@@ -14,7 +14,6 @@ $(function() {
 
 
   var doc = JSON.parse('{{doc|safe}}');
-  $("#title").html("Doc " + doc["host_id"]);
   document.getElementById("doc").appendChild(
     renderjson.set_show_by_default(true)
               .set_show_to_level(1)
@@ -48,8 +47,7 @@ $(function() {
 
 {% block content %}
 
-<h1 id="title">Collection: {{collection_name}}</h1>
-<h2>Doc {{doc_id}}</h2>
+<h2>Collection: {{collection_name}}, Doc: {{doc_id}}</h2>
 <div id="doc">
 </div>
 
