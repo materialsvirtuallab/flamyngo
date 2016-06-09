@@ -4,9 +4,7 @@ Flamyngo is a customizable Flask frontend for MongoDB.
 
 At the most basic level, the aim is to delegate most settings to a YAML
 configuration file, which then allows the  underlying code to be reused for
-any conceivable collection. Querying and display is restricted to a single
-collection for now. However, the code can serve as a starting point for more
-complex setups to support multiple collections.
+any conceivable collection.
 
 # Usage
 
