@@ -42,14 +42,18 @@ collections:
     # {<key>: type(<search_string>)}. This allows for much more friendly setups for common
     # queries that do not require a user to type in verbose Mongo criteria. Each
     # regex should be uniquely identifying.
-    # Supported types include int, float, str, objectid.
+    # Types can be any kind of callable function that takes in a string and return
+    # a value without other arguments. E.g., int, str, float, etc. You can support
+    # more powerful conversions by writing your own processing function, e.g., 
+    # mymodule.convert_degress_to_radians. 
     # If none of the regex works, the criteria is interpreted as a Mongo-like dict query.
     query:
       - [last_name, '^[A-Za-z]+$', str]
       - [phone_number, '^[0-9]+$', int]
 
-    # A default list of projections to display as a table. Only keys in the root of
-    # the document is supported right now.
+    # A default list of projection key, processing function to display as a table. 
+    # Again, processing function can be any callable, and you can define your own.
+    # For example, you can take in a float and render it as a fixed decimal.
     summary:
       - [_id, str]
       - [first_name, str]
@@ -62,4 +66,9 @@ collections:
     # unique document.
     unique_key: _id
     unique_key_type: bson.objectid.ObjectId
+
+# Basic auth can be set up by specifying user and password below. If these are not
+# set, then no authentication.
+AUTH_USER: Iam
+AUTH_PASSWD: Pink
 ```
