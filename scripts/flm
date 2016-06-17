@@ -11,6 +11,24 @@ __email__ = "shyuep@gmail.com"
 __date__ = "2/27/2016"
 
 
+import time
+import webbrowser
+
+
+def run_server(args):
+    os.environ["FLAMYNGO"] = args.config
+    from flamyngo import app
+    from multiprocessing import Process
+    p = Process(target=app.run,
+                 kwargs={"debug": args.debug, "host": args.host,
+                         "port": args.port})
+    p.start()
+    if args.browser:
+        time.sleep(2)
+        webbrowser.open("http://{}:{}".format(args.host, args.port))
+    p.join()
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
@@ -23,13 +41,20 @@ if __name__ == "__main__":
         default=os.path.join(os.environ["HOME"], ".flamyngo.yaml"),
         help="YAML file where the config is stored")
     parser.add_argument(
+        "-b", "--browser", dest="browser", action="store_true",
+        help="Automatically launch in browser.")
+    parser.add_argument(
+        "-d", "--debug", dest="debug", action="store_true",
+        help="Whether to run in debug mode.")
+    parser.add_argument(
+        "-hh", "--host", dest="host", type=str, nargs="?",
+        default='localhost',
+        help="Host in which to run the server. Defaults to localhost.")
+    parser.add_argument(
         "-p", "--port", dest="port", type=int, nargs="?",
         default=5000,
         help="Port in which to run the server. Defaults to 5000.")
 
     args = parser.parse_args()
 
-    os.environ["FLAMYNGO"] = args.config
-    from flamyngo import app
-    app.run(debug=True, host='0.0.0.0', port=args.port)
-
+    run_server(args)
