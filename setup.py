@@ -6,7 +6,7 @@ import glob
 import os
 from io import open
 
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 
 SETUP_PTH = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,7 +16,7 @@ with open(os.path.join(SETUP_PTH, "README.md")) as f:
 setup(
     name="flamyngo",
     packages=find_packages(),
-    version="0.2.0",
+    version="0.3.0",
     install_requires=["flask", "pyyaml", "monty>=0.7.0", "pymongo"],
     package_data={"flamyngo": ["static/*.*", "static/js/*.*",
                                "templates/*"]},
@@ -37,7 +37,6 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Development Status :: 4 - Beta",
-        "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
     ],
