@@ -10,13 +10,21 @@ from setuptools import setup, find_packages
 
 SETUP_PTH = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(SETUP_PTH, "README.md")) as f:
-    long_desc = f.read()
+long_desc = """
+Flamyngo is a customizable Flask frontend for MongoDB.
+
+At the most basic level, the aim is to delegate most settings to a YAML
+configuration file, which then allows the  underlying code to be reused for
+any conceivable collection.
+
+Detailed usage instructions are available at the project's `Github page
+<https://github.com/materialsvirtuallab/flamyngo>`_.
+"""
 
 setup(
     name="flamyngo",
     packages=find_packages(),
-    version="0.3.0",
+    version="0.3.1",
     install_requires=["flask", "pyyaml", "monty>=0.7.0", "pymongo"],
     package_data={"flamyngo": ["static/*.*", "static/js/*.*",
                                "templates/*"]},

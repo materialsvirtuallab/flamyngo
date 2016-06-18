@@ -7,7 +7,8 @@ from pymongo import MongoClient
 from monty.serialization import loadfn
 from monty.json import jsanitize
 
-from flask import render_template, request, make_response, Response
+from flask import render_template, make_response
+from flask.json import jsonify
 
 from flamyngo import app
 
@@ -124,6 +125,16 @@ def get_doc(collection_name, uid):
         'doc.html', doc=json.dumps(jsanitize(doc)),
         collection_name=collection_name, doc_id=uid)
     )
+
+
+@app.route('/<string:collection_name>/doc/<string:uid>/json')
+@requires_auth
+def get_doc_json(collection_name, uid):
+    settings = CSETTINGS[collection_name]
+    criteria = {
+        settings["unique_key"]: process(uid, settings["unique_key_type"])}
+    doc = DB[collection_name].find_one(criteria)
+    return jsonify(jsanitize(doc))
 
 
 def process(val, vtype):

@@ -72,3 +72,17 @@ collections:
 AUTH_USER: Iam
 AUTH_PASSWD: Pink
 ```
+
+# URLs
+
+Assuming that you are running on local host at port 5000, the initial
+landing page will be at http://localhost:5000.
+
+Pages for individual docs following the format 
+http://localhost:5000/[collection_name]/doc/[unique_id].
+
+A RESTful link for downloading individual docs as a json response is 
+given as http://localhost:5000/[collection_name]/doc/[unique_id]/json.
+
+
+
