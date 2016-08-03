@@ -113,7 +113,6 @@ def query():
     else:
         results = []
         error_message = "No results!"
-    print(results)
     return make_response(render_template(
         'index.html', collection_name=cname,
         results=results, fields=fields,
