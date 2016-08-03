@@ -19,7 +19,8 @@ module_path = os.path.dirname(os.path.abspath(__file__))
 
 
 SETTINGS = loadfn(os.environ["FLAMYNGO"])
-CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"])
+CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"],
+                   connect=False)
 DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])

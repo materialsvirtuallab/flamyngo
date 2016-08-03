@@ -18,15 +18,17 @@ import webbrowser
 def run_server(args):
     os.environ["FLAMYNGO"] = args.config
     from flamyngo import app
-    from multiprocessing import Process
-    p = Process(target=app.run,
-                 kwargs={"debug": args.debug, "host": args.host,
-                         "port": args.port})
-    p.start()
     if args.browser:
+        from multiprocessing import Process
+        p = Process(target=app.run,
+                     kwargs={"debug": args.debug, "host": args.host,
+                             "port": args.port})
+        p.start()
         time.sleep(2)
         webbrowser.open("http://{}:{}".format(args.host, args.port))
-    p.join()
+        p.join()
+    else:
+        app.run(debug=args.debug, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
@@ -48,8 +50,8 @@ if __name__ == "__main__":
         help="Whether to run in debug mode.")
     parser.add_argument(
         "-hh", "--host", dest="host", type=str, nargs="?",
-        default='localhost',
-        help="Host in which to run the server. Defaults to localhost.")
+        default='0.0.0.0',
+        help="Host in which to run the server. Defaults to 0.0.0.0.")
     parser.add_argument(
         "-p", "--port", dest="port", type=int, nargs="?",
         default=5000,
