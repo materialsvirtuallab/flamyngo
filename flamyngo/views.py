@@ -83,8 +83,15 @@ def query():
         results = []
         for r in DB[cname].find(criteria, projection=projection):
             processed = {}
+            fields = []
             for m in settings["summary"]:
-                k, v = m
+                if len(m) == 2:
+                    k, v = m
+                    mapped_k = k
+                elif len(m) == 3:
+                    k, v, mapped_k = m
+                else:
+                    raise ValueError("Invalid summary settings!")
                 toks = k.split(".")
                 try:
                     val = r[toks[0]]
@@ -99,15 +106,17 @@ def query():
                     print(str(ex))
                     # Return the base value if we can descend into the data.
                     val = None
-                processed[k] = val
+                processed[mapped_k] = val
+                fields.append(mapped_k)
             results.append(processed)
         error_message = None
     else:
         results = []
         error_message = "No results!"
+    print(results)
     return make_response(render_template(
         'index.html', collection_name=cname,
-        results=results, fields=projection,
+        results=results, fields=fields,
         unique_key=settings["unique_key"],
         active_collection=cname,
         collections=CNAMES,
