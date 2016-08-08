@@ -10,14 +10,15 @@
 
 $(function() {
 
+    $.get("/{{ collection_name }}/doc/{{doc_id}}/json", function( data ) {
+      document.getElementById("doc").appendChild(
+        renderjson.set_show_by_default(true)
+                  .set_show_to_level(1)
+                  .set_sort_objects(true)
+                  .set_icons('+', '-')
+                  .set_max_string_length(100)(data));
+    });
 
-  var doc = JSON.parse('{{doc|safe}}');
-  document.getElementById("doc").appendChild(
-    renderjson.set_show_by_default(true)
-              .set_show_to_level(1)
-              .set_sort_objects(true)
-              .set_icons('+', '-')
-              .set_max_string_length(100)(doc));
   });
 
 

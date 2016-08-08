@@ -132,8 +132,7 @@ def get_doc(collection_name, uid):
         settings["unique_key"]: process(uid, settings["unique_key_type"])}
     doc = DB[collection_name].find_one(criteria)
     return make_response(render_template(
-        'doc.html', doc=json.dumps(jsanitize(doc)),
-        collection_name=collection_name, doc_id=uid)
+        'doc.html', collection_name=collection_name, doc_id=uid)
     )
 
 
