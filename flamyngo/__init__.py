@@ -2,14 +2,8 @@
 # Copyright (c) Materials Virtual Lab.
 # Distributed under the terms of the BSD License.
 
-from __future__ import division, unicode_literals, print_function
+__author__ = "Shyue Ping Ong"
+__email__ ="shyuep@gmail.com"
+__version__ = "0.5.1"
 
-"""
-#TODO: Replace with proper module doc.
-"""
 
-from flask import Flask
-
-app = Flask(__name__)
-
-from . import views

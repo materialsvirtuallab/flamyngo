@@ -17,7 +17,7 @@ import webbrowser
 
 def run_server(args):
     os.environ["FLAMYNGO"] = args.config
-    from flamyngo import app
+    from flamyngo.app import app
     if args.browser:
         from multiprocessing import Process
         p = Process(target=app.run,

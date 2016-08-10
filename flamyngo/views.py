@@ -10,7 +10,7 @@ from monty.json import jsanitize
 from flask import render_template, make_response
 from flask.json import jsonify
 
-from flamyngo import app
+from flamyngo.app import app
 
 from functools import wraps
 from flask import request, Response
