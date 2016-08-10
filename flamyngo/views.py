@@ -121,7 +121,7 @@ def query():
         error_message = "No results!"
     return make_response(render_template(
         'index.html', collection_name=cname,
-        results=results, fields=fields,
+        results=results, fields=fields, search_string=search_string,
         unique_key=settings["unique_key"],
         active_collection=cname,
         collections=CNAMES,
@@ -204,7 +204,7 @@ def plot():
             ax.set_xlabel(ax.get_xlabel(), size=20)
             ax.set_ylabel(ax.get_ylabel(), size=20)
             if plot_type == "scatter":
-                plt.plot(xdata, ydata, "x")
+                plt.plot(xdata, ydata, "o")
             else:
                 values = list(range(len(xdata)))
                 plt.bar(values, ydata)
@@ -226,7 +226,8 @@ def plot():
 
     return make_response(render_template(
         'plot.html', collection_name=cname,
-        plot=svg, xaxis=xaxis, yaxis=yaxis,
+        plot=svg, search_string=search_string,
+        xaxis=xaxis, yaxis=yaxis,
         active_collection=cname,
         collections=CNAMES,
         error_message=error_message)
