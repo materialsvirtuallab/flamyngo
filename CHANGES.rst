@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.5.4
+------
+* Fix highcharts for https.
+
 v0.5.3
 ------
 * matplotlib replaced with dynamic highcharts plotting.
