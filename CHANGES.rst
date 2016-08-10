@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.5.3
+------
+* matplotlib replaced with dynamic highcharts plotting.
+
 v0.5.2
 ------
 * Improved aesthetics and sticky queries.
