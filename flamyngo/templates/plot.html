@@ -12,17 +12,102 @@
 <script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
 <script src="//cdn.datatables.net/buttons/1.2.1/js/buttons.html5.min.js"></script>
 <script src="//cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
 
 <script type="text/javascript">
 $(function() {
     $('input[type=submit]').button();
     $(".select" ).selectmenu();
-    $('#results-table').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    } );
+
+    {% if data %}
+        var i, data;
+        data = {{ data|safe }};
+
+        {% if plot_type == "scatter" %}
+        $('#plot-div').highcharts({
+            chart: {
+                type: 'scatter',
+                zoomType: 'xy',
+                width: 800,
+                height: 600
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    enabled: true,
+                    text: '{{xaxis}}'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: '{{yaxis}}'
+                }
+            },
+            plotOptions: {
+            scatter: {
+                marker: {
+                    radius: 5
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Data',
+            color: 'rgba(223, 83, 83, .8)',
+            data: data
+            }]
+        });
+        {% else %}
+        var categories, y;
+        categories = [];
+        y = [];
+        for (i = 0; i < data.length; i++){
+            categories.push(data[i][0]);
+            y.push(data[i][1]);
+        }
+        $('#plot-div').highcharts({
+            chart: {
+                width: 800,
+                height: 600,
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    text: '{{ xaxis }}'
+                },
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: {
+                title: {
+                    text: '{{ yaxis }}'
+                }
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: '{{ yaxis }}',
+                data: y
+            }]
+        });
+        {% endif %}
+    {% endif %}
   });
 </script>
 {% endblock %}
@@ -91,13 +176,7 @@ $(function() {
     </p>
 </form>
 
-{% if plot %}
-
-<p id="plot">
-{{plot|safe}}
-</p>
-
-{% endif %}
+<div id="plot-div"></div>
 
 {% if error_message %}
 <h2>{{ error_message }}</h2>

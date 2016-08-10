@@ -151,13 +151,12 @@ def plot():
                 break
         if not criteria:
             criteria = json.loads(search_string)
-        xdata = []
-        ydata = []
+        data = []
         for r in DB[cname].find(criteria, projection=projection):
             x = _get_val(xaxis, r, "str")
             y = _get_val(yaxis, r, "str")
             try:
-                if x == int(x):
+                if float(x) == int(x):
                     x = int(x)
             except:
                 try:
@@ -166,7 +165,7 @@ def plot():
                     # X is string.
                     pass
             try:
-                if y == int(y):
+                if float(y) == int(y):
                     y = int(y)
             except:
                 try:
@@ -175,59 +174,56 @@ def plot():
                     # Y is string.
                     pass
             if x and y:
-                xdata.append(x)
-                ydata.append(y)
+                data.append([x, y])
         error_message = None
     else:
-        xdata = []
-        ydata = []
+        data = []
         error_message = "No results!"
-    try:
-        if xdata and ydata:
-            import matplotlib
-            matplotlib.use("Agg")
-            import matplotlib.pyplot as plt
-            import importlib
-            color_cycle = ("qualitative", "Set1_9")
-            mod = importlib.import_module("palettable.colorbrewer.%s" %
-                                          color_cycle[0])
-            colors = getattr(mod, color_cycle[1]).mpl_colors
-            from cycler import cycler
-
-            plt.figure(figsize=(8, 6), facecolor="w")
-            ax = plt.gca()
-            ax.set_prop_cycle(cycler('color', colors))
-            plt.xticks(fontsize=16)
-            plt.yticks(fontsize=16)
-            ax = plt.gca()
-            ax.set_title(ax.get_title(), size=28)
-            ax.set_xlabel(ax.get_xlabel(), size=20)
-            ax.set_ylabel(ax.get_ylabel(), size=20)
-            if plot_type == "scatter":
-                plt.plot(xdata, ydata, "o")
-            else:
-                values = list(range(len(xdata)))
-                plt.bar(values, ydata)
-                plt.xticks(values, xdata, rotation=-90)
-            plt.xlabel(xaxis)
-            plt.ylabel(yaxis)
-            plt.tight_layout()
-            from io import StringIO
-            s = StringIO()
-            plt.savefig(s, format="svg")
-
-            svg = s.getvalue()
-            s.close()
-        else:
-            svg = None
-    except Exception as ex:
-        error_message = str(ex)
-        svg = None
-
+    # try:
+    #     if xdata and ydata:
+    #         import matplotlib
+    #         matplotlib.use("Agg")
+    #         import matplotlib.pyplot as plt
+    #         import importlib
+    #         color_cycle = ("qualitative", "Set1_9")
+    #         mod = importlib.import_module("palettable.colorbrewer.%s" %
+    #                                       color_cycle[0])
+    #         colors = getattr(mod, color_cycle[1]).mpl_colors
+    #         from cycler import cycler
+    #
+    #         plt.figure(figsize=(8, 6), facecolor="w")
+    #         ax = plt.gca()
+    #         ax.set_prop_cycle(cycler('color', colors))
+    #         plt.xticks(fontsize=16)
+    #         plt.yticks(fontsize=16)
+    #         ax = plt.gca()
+    #         ax.set_title(ax.get_title(), size=28)
+    #         ax.set_xlabel(ax.get_xlabel(), size=20)
+    #         ax.set_ylabel(ax.get_ylabel(), size=20)
+    #         if plot_type == "scatter":
+    #             plt.plot(xdata, ydata, "o")
+    #         else:
+    #             values = list(range(len(xdata)))
+    #             plt.bar(values, ydata)
+    #             plt.xticks(values, xdata, rotation=-90)
+    #         plt.xlabel(xaxis)
+    #         plt.ylabel(yaxis)
+    #         plt.tight_layout()
+    #         from io import StringIO
+    #         s = StringIO()
+    #         plt.savefig(s, format="svg")
+    #
+    #         svg = s.getvalue()
+    #         s.close()
+    #     else:
+    #         svg = None
+    # except Exception as ex:
+    #     error_message = str(ex)
+    #     svg = None
     return make_response(render_template(
         'plot.html', collection_name=cname,
-        plot=svg, search_string=search_string,
-        xaxis=xaxis, yaxis=yaxis,
+        search_string=search_string, plot_type=plot_type,
+        xaxis=xaxis, yaxis=yaxis, data=data,
         active_collection=cname,
         collections=CNAMES,
         error_message=error_message)
