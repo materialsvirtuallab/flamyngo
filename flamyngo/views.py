@@ -184,6 +184,8 @@ def plot():
         error_message = "No results!"
     try:
         if xdata and ydata:
+            import matplotlib
+            matplotlib.use("Agg")
             import matplotlib.pyplot as plt
             import importlib
             color_cycle = ("qualitative", "Set1_9")
