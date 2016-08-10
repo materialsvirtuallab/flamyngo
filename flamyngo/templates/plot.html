@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}{{db_name}} Query{% endblock %}
+
+{% block top_javascript %}
+
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.2.1/js/dataTables.buttons.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.2.1/js/buttons.flash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+<script src="//cdn.datatables.net/buttons/1.2.1/js/buttons.html5.min.js"></script>
+<script src="//cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
+
+<script type="text/javascript">
+$(function() {
+    $('input[type=submit]').button();
+    $(".select" ).selectmenu();
+    $('#results-table').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+  });
+</script>
+{% endblock %}
+
+{%  block css %}
+<link rel=stylesheet type=text/css
+          href="{{ url_for('static', filename='index.css') }}">
+<link rel=stylesheet type=text/css
+          href="{{ url_for('static', filename='plot.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<h1>Query</h1>
+
+<form action="/plot" method="get" name="plot">
+    <p id="query">
+        <table>
+        <tr>
+            <td><label>Collection</label></td>
+            <td><select name="collection" class="select">
+            {% for c in collections %}
+            {% if c == active_collection %}
+                <option value="{{c}}" selected="selected">{{c}}</option>
+            {% else %}
+                <option value="{{c}}">{{c}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Plot type</label></td>
+            <td>
+                <select name="plot_type" class="select">
+                    <option value="scatter" selected="selected">scatter</option>
+                    <option value="bar">bar</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label>Filter</label></td>
+            <td><input type="text" name="search_string"
+                              placeholder="Type query..." size="30">
+            </td>
+        </tr>
+        <tr>
+            <td><label>X-axis</label></td>
+            <td><input type="text" name="xaxis"
+                       placeholder="E.g., year" size="30">
+            </td>
+        </tr>
+        <tr>
+            <td><label>Y-axis</label></td>
+            <td><input type="text" name="yaxis"
+                       placeholder="E.g., earnings" size="30">
+            </td>
+        </tr>
+        </table>
+    </p>
+    <p>
+        <input type="submit" name="submit" value="Search">
+    </p>
+</form>
+
+{% if plot %}
+
+<h1>Plot</h1>
+
+<p id="plot">
+{{plot|safe}}
+</p>
+
+{% endif %}
+
+{% if error_message %}
+<h2>{{ error_message }}</h2>
+{% endif %}
+
+
+{% endblock %}
