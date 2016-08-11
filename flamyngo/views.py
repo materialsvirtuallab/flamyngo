@@ -164,10 +164,6 @@ def get_data():
 @app.route('/<string:collection_name>/doc/<string:uid>')
 @requires_auth
 def get_doc(collection_name, uid):
-    settings = CSETTINGS[collection_name]
-    criteria = {
-        settings["unique_key"]: process(uid, settings["unique_key_type"])}
-    doc = DB[collection_name].find_one(criteria)
     return make_response(render_template(
         'doc.html', collection_name=collection_name, doc_id=uid)
     )
