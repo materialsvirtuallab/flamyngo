@@ -65,24 +65,6 @@ def index():
     return make_response(render_template('index.html', collections=CNAMES))
 
 
-def _get_val(k, d, processing_func):
-    toks = k.split(".")
-    try:
-        val = d[toks[0]]
-        for t in toks[1:]:
-            try:
-                val = val[t]
-            except KeyError:
-                # Handle integer indices
-                val = val[int(t)]
-        val = process(val, processing_func)
-    except Exception as ex:
-        print(str(ex))
-        # Return the base value if we can descend into the data.
-        val = None
-    return val
-
-
 @app.route('/query', methods=['GET'])
 @requires_auth
 def query():
@@ -153,7 +135,6 @@ def plot():
 @requires_auth
 def get_data():
     cname = request.args.get("collection")
-    print(cname)
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
@@ -171,31 +152,12 @@ def get_data():
             criteria = json.loads(search_string)
         data = []
         for r in DB[cname].find(criteria, projection=projection):
-            x = _get_val(xaxis, r, "str")
-            y = _get_val(yaxis, r, "str")
-            try:
-                if float(x) == int(x):
-                    x = int(x)
-            except:
-                try:
-                    x = float(x)
-                except:
-                    # X is string.
-                    pass
-            try:
-                if float(y) == int(y):
-                    y = int(y)
-            except:
-                try:
-                    y = float(y)
-                except:
-                    # Y is string.
-                    pass
+            x = _get_val(xaxis, r, None)
+            y = _get_val(yaxis, r, None)
             if x and y:
                 data.append([x, y])
     else:
         data = []
-
     return jsonify(jsanitize(data))
 
 
@@ -222,13 +184,43 @@ def get_doc_json(collection_name, uid):
 
 
 def process(val, vtype):
-    toks = vtype.rsplit(".", 1)
-    if len(toks) == 1:
-        func = globals()["__builtins__"][toks[0]]
+    if vtype:
+        toks = vtype.rsplit(".", 1)
+        if len(toks) == 1:
+            func = globals()["__builtins__"][toks[0]]
+        else:
+            mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
+            func = getattr(mod, toks[1])
+        return func(val)
     else:
-        mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
-        func = getattr(mod, toks[1])
-    return func(val)
+        try:
+            if float(val) == int(val):
+                return int(val)
+            return float(val)
+        except:
+            try:
+                return float(val)
+            except:
+                # Y is string.
+                return val
+
+
+def _get_val(k, d, processing_func):
+    toks = k.split(".")
+    try:
+        val = d[toks[0]]
+        for t in toks[1:]:
+            try:
+                val = val[t]
+            except KeyError:
+                # Handle integer indices
+                val = val[int(t)]
+        val = process(val, processing_func)
+    except Exception as ex:
+        print(str(ex))
+        # Return the base value if we can descend into the data.
+        val = None
+    return val
 
 
 if __name__ == "__main__":

@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.6.2
+------
+* Bug fix release.
+
 v0.6.0
 ------
 * Improved aesthetics in highcharts.
