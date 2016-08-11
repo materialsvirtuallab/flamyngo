@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.6.4
+------
+* Minor efficiency improvements. Universal wheel.
+
 v0.6.2
 ------
 * Bug fix release.
