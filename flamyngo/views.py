@@ -135,7 +135,7 @@ def plot():
     cname = request.args.get("collection")
     if not cname:
         return make_response(render_template('plot.html', collections=CNAMES))
-    plot_type = request.args.get("plot_type")
+    plot_type = request.args.get("plot_type") or "scatter"
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
     yaxis = request.args.get("yaxis")

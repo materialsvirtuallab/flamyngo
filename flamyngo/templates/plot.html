@@ -188,8 +188,13 @@ $(function() {
             <td><label>Plot type</label></td>
             <td>
                 <select name="plot_type" class="select">
-                    <option value="scatter" selected="selected">scatter</option>
-                    <option value="bar">bar</option>
+                    {% if plot_type == "bar" %}
+                        <option value="scatter">scatter</option>
+                        <option value="bar" selected="selected">bar</option>
+                    {% else %}
+                        <option value="scatter" selected="selected">scatter</option>
+                        <option value="bar">bar</option>
+                    {% endif %}
                 </select>
             </td>
         </tr>
