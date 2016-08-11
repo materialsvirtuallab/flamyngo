@@ -20,93 +20,138 @@ $(function() {
     $('input[type=submit]').button();
     $(".select" ).selectmenu();
 
-    {% if data %}
-        var i, data;
-        data = {{ data|safe }};
+    {% if plot %}
+        $.ajax({
+          type: "GET",
+          url: "/data",
+          data: {
+            "collection": "{{collection}}",
+            "xaxis": "{{xaxis}}",
+            "yaxis": "{{yaxis}}",
+            "search_string": "{{search_string}}"
+          },
+          success: function (data){
+            var i;
 
-        {% if plot_type == "scatter" %}
-        $('#plot-div').highcharts({
-            chart: {
-                type: 'scatter',
-                zoomType: 'xy',
-                width: 800,
-                height: 600
-            },
-            title: {
-                text: ''
-            },
-            xAxis: {
-                title: {
-                    enabled: true,
-                    text: '{{xaxis}}'
-                }
-            },
-            yAxis: {
-                title: {
-                    text: '{{yaxis}}'
-                }
-            },
-            plotOptions: {
-            scatter: {
-                marker: {
-                    radius: 5
+            {% if plot_type == "scatter" %}
+            $('#plot-div').highcharts({
+                chart: {
+                    type: 'scatter',
+                    zoomType: 'xy',
+                    width: 800,
+                    height: 600
                 },
-                states: {
-                    hover: {
-                        marker: {
-                            enabled: false
+                title: {
+                    text: ''
+                },
+                xAxis: {
+                    title: {
+                        enabled: true,
+                        text: '{{xaxis}}',
+                        style: {
+                            fontSize:'24px'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'16px'
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: '{{yaxis}}',
+                        style: {
+                            fontSize:'24px'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'16px'
+                        }
+                    }
+                },
+                plotOptions: {
+                scatter: {
+                    marker: {
+                        radius: 5
+                    },
+                    states: {
+                        hover: {
+                            marker: {
+                                enabled: false
+                            }
                         }
                     }
                 }
-            }
-        },
-        series: [{
-            name: 'Data',
-            color: 'rgba(223, 83, 83, .8)',
-            data: data
-            }]
-        });
-        {% else %}
-        var categories, y;
-        categories = [];
-        y = [];
-        for (i = 0; i < data.length; i++){
-            categories.push(data[i][0]);
-            y.push(data[i][1]);
-        }
-        $('#plot-div').highcharts({
-            chart: {
-                width: 800,
-                height: 600,
-                type: 'column'
-            },
-            title: {
-                text: ''
-            },
-            xAxis: {
-                title: {
-                    text: '{{ xaxis }}'
-                },
-                categories: categories,
-                crosshair: true
-            },
-            yAxis: {
-                title: {
-                    text: '{{ yaxis }}'
-                }
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
             },
             series: [{
-                name: '{{ yaxis }}',
-                data: y
-            }]
+                name: 'Data',
+                color: 'rgba(223, 83, 83, .8)',
+                data: data
+                }]
+            });
+            {% else %}
+            var categories, y;
+            categories = [];
+            y = [];
+            for (i = 0; i < data.length; i++){
+                categories.push(data[i][0]);
+                y.push(data[i][1]);
+            }
+            $('#plot-div').highcharts({
+                chart: {
+                    width: 800,
+                    height: 600,
+                    type: 'column'
+                },
+                title: {
+                    text: ''
+                },
+                xAxis: {
+                    title: {
+                        text: '{{ xaxis }}',
+                        style: {
+                            fontSize:'24px'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'16px'
+                        }
+                    },
+                    categories: categories,
+                    crosshair: true
+                },
+                yAxis: {
+                    title: {
+                        text: '{{ yaxis }}',
+                        style: {
+                            fontSize:'24px'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'16px'
+                        }
+                    }
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: '{{ yaxis }}',
+                    data: y
+                }]
+            });
+            {% endif %}
+          }
         });
-        {% endif %}
+
+
     {% endif %}
   });
 </script>

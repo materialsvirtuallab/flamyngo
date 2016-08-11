@@ -135,8 +135,26 @@ def plot():
     cname = request.args.get("collection")
     if not cname:
         return make_response(render_template('plot.html', collections=CNAMES))
-    settings = CSETTINGS[cname]
     plot_type = request.args.get("plot_type")
+    search_string = request.args.get("search_string")
+    xaxis = request.args.get("xaxis")
+    yaxis = request.args.get("yaxis")
+    return make_response(render_template(
+        'plot.html', collection=cname,
+        search_string=search_string, plot_type=plot_type,
+        xaxis=xaxis, yaxis=yaxis,
+        active_collection=cname,
+        collections=CNAMES,
+        plot=True)
+    )
+
+
+@app.route('/data', methods=['GET'])
+@requires_auth
+def get_data():
+    cname = request.args.get("collection")
+    print(cname)
+    settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
     yaxis = request.args.get("yaxis")
@@ -175,59 +193,10 @@ def plot():
                     pass
             if x and y:
                 data.append([x, y])
-        error_message = None
     else:
         data = []
-        error_message = "No results!"
-    # try:
-    #     if xdata and ydata:
-    #         import matplotlib
-    #         matplotlib.use("Agg")
-    #         import matplotlib.pyplot as plt
-    #         import importlib
-    #         color_cycle = ("qualitative", "Set1_9")
-    #         mod = importlib.import_module("palettable.colorbrewer.%s" %
-    #                                       color_cycle[0])
-    #         colors = getattr(mod, color_cycle[1]).mpl_colors
-    #         from cycler import cycler
-    #
-    #         plt.figure(figsize=(8, 6), facecolor="w")
-    #         ax = plt.gca()
-    #         ax.set_prop_cycle(cycler('color', colors))
-    #         plt.xticks(fontsize=16)
-    #         plt.yticks(fontsize=16)
-    #         ax = plt.gca()
-    #         ax.set_title(ax.get_title(), size=28)
-    #         ax.set_xlabel(ax.get_xlabel(), size=20)
-    #         ax.set_ylabel(ax.get_ylabel(), size=20)
-    #         if plot_type == "scatter":
-    #             plt.plot(xdata, ydata, "o")
-    #         else:
-    #             values = list(range(len(xdata)))
-    #             plt.bar(values, ydata)
-    #             plt.xticks(values, xdata, rotation=-90)
-    #         plt.xlabel(xaxis)
-    #         plt.ylabel(yaxis)
-    #         plt.tight_layout()
-    #         from io import StringIO
-    #         s = StringIO()
-    #         plt.savefig(s, format="svg")
-    #
-    #         svg = s.getvalue()
-    #         s.close()
-    #     else:
-    #         svg = None
-    # except Exception as ex:
-    #     error_message = str(ex)
-    #     svg = None
-    return make_response(render_template(
-        'plot.html', collection_name=cname,
-        search_string=search_string, plot_type=plot_type,
-        xaxis=xaxis, yaxis=yaxis, data=data,
-        active_collection=cname,
-        collections=CNAMES,
-        error_message=error_message)
-    )
+
+    return jsonify(jsanitize(data))
 
 
 @app.route('/<string:collection_name>/doc/<string:uid>')

@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.6.0
+------
+* Improved aesthetics in highcharts.
+
 v0.5.4
 ------
 * Fix highcharts for https.
