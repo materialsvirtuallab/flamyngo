@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.6.5
+------
+* Fix for mapped unique keys.
+
 v0.6.4
 ------
 * Minor efficiency improvements. Universal wheel.

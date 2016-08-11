@@ -84,6 +84,7 @@ def query():
         results = []
         for r in DB[cname].find(criteria, projection=projection):
             processed = {}
+            mapped_names = {}
             fields = []
             for m in settings["summary"]:
                 if len(m) == 2:
@@ -94,6 +95,7 @@ def query():
                 else:
                     raise ValueError("Invalid summary settings!")
                 val = _get_val(k, r, v.strip())
+                mapped_names[k] = mapped_k
                 processed[mapped_k] = val
                 fields.append(mapped_k)
             results.append(processed)
@@ -104,9 +106,8 @@ def query():
     return make_response(render_template(
         'index.html', collection_name=cname,
         results=results, fields=fields, search_string=search_string,
-        unique_key=settings["unique_key"],
-        active_collection=cname,
-        collections=CNAMES,
+        mapped_names=mapped_names, unique_key=settings["unique_key"],
+        active_collection=cname, collections=CNAMES,
         error_message=error_message)
     )
 
