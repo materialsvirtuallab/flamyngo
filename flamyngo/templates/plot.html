@@ -15,13 +15,20 @@
     $(function() {
         $('input[type=submit]').button();
         $(".select").selectmenu();
+        var collection, xaxis, yaxis, search_string, plot_type, i, series,colors;
+        series = [];
+        colors = ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5',
+        '#64E572', '#FF9655', '#FFF263', '#6AF9C4'];
         $("#form-plot").submit(function(e) {
-            var collection, xaxis, yaxis, search_string, plot_type;
+
             collection = $("#select-collection").val();
             plot_type = $("#select-plot_type").val();
             xaxis = $("#input-xaxis").val();
             yaxis = $("#input-yaxis").val();
             search_string = $("#input-search").val();
+            if ($("#checkbox-clear").is(':checked')){
+                series = [];
+            }
             $.ajax({
                 type: "GET",
                 url: "/data",
@@ -32,8 +39,13 @@
                     "search_string": search_string
                 },
                 success: function(data) {
-                    var i;
+                    var color = colors[series.length % colors.length]
+                    series.push({
+                        name: search_string,
+                        data: data,
+                        color: color
 
+                    });
                     if (plot_type == "scatter") {
                         $('#plot-div').highcharts({
                             chart: {
@@ -86,11 +98,7 @@
                                     }
                                 }
                             },
-                            series: [{
-                                name: yaxis,
-                                color: 'rgba(223, 83, 83, .8)',
-                                data: data
-                            }]
+                            series: series
                         });
                     } else {
                         var categories, y;
@@ -144,7 +152,7 @@
                                 }
                             },
                             series: [{
-                                name: yaxis,
+                                name: search_string,
                                 data: y
                             }]
                         });
@@ -222,6 +230,17 @@
                     <input type="text" name="yaxis" id="input-yaxis" placeholder="E.g., earnings" size="30" value="{{yaxis}}">
                 </td>
             </tr>
+            <tr>
+                <td>
+
+                </td>
+                <td>
+                    <input type="checkbox" name="vehicle" id="checkbox-clear"
+                           value="clear">Clear previous plot? (scatter only)<br>
+                </td>
+
+            </tr>
+
         </table>
     </p>
     <p>

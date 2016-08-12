@@ -1,6 +1,14 @@
 Change log
 ==========
 
+v0.7.1
+------
+* Allow persistent plotting.
+
+v0.7.0
+------
+* True ajaxy implementation.
+
 v0.6.5
 ------
 * Fix for mapped unique keys.
