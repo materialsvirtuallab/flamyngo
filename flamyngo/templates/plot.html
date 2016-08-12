@@ -1,8 +1,4 @@
-{% extends "layout.html" %}
-
-{% block title %}{{db_name}} Query{% endblock %}
-
-{% block top_javascript %}
+{% extends "layout.html" %} {% block title %}{{db_name}} Query{% endblock %} {% block top_javascript %}
 
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.datatables.net/buttons/1.2.1/js/dataTables.buttons.min.js"></script>
@@ -16,221 +12,224 @@
 <script src="//code.highcharts.com/modules/exporting.js"></script>
 
 <script type="text/javascript">
-$(function() {
-    $('input[type=submit]').button();
-    $(".select" ).selectmenu();
+    $(function() {
+        $('input[type=submit]').button();
+        $(".select").selectmenu();
+        $("#form-plot").submit(function(e) {
+            var collection, xaxis, yaxis, search_string, plot_type;
+            collection = $("#select-collection").val();
+            plot_type = $("#select-plot_type").val();
+            xaxis = $("#input-xaxis").val();
+            yaxis = $("#input-yaxis").val();
+            search_string = $("#input-search").val();
+            $.ajax({
+                type: "GET",
+                url: "/data",
+                data: {
+                    "collection": collection,
+                    "xaxis": xaxis,
+                    "yaxis": yaxis,
+                    "search_string": search_string
+                },
+                success: function(data) {
+                    var i;
 
-    {% if plot %}
-        $.ajax({
-          type: "GET",
-          url: "/data",
-          data: {
-            "collection": "{{collection}}",
-            "xaxis": "{{xaxis}}",
-            "yaxis": "{{yaxis}}",
-            "search_string": "{{search_string}}"
-          },
-          success: function (data){
-            var i;
-
-            {% if plot_type == "scatter" %}
-            $('#plot-div').highcharts({
-                chart: {
-                    type: 'scatter',
-                    zoomType: 'xy',
-                    width: 800,
-                    height: 600
-                },
-                title: {
-                    text: ''
-                },
-                xAxis: {
-                    title: {
-                        enabled: true,
-                        text: '{{xaxis}}',
-                        style: {
-                            fontSize:'24px'
+                    if (plot_type == "scatter") {
+                        $('#plot-div').highcharts({
+                            chart: {
+                                type: 'scatter',
+                                zoomType: 'xy',
+                                width: 800,
+                                height: 600
+                            },
+                            title: {
+                                text: ''
+                            },
+                            xAxis: {
+                                title: {
+                                    enabled: true,
+                                    text: xaxis,
+                                    style: {
+                                        fontSize: '24px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        fontSize: '16px'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: yaxis,
+                                    style: {
+                                        fontSize: '24px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        fontSize: '16px'
+                                    }
+                                }
+                            },
+                            plotOptions: {
+                                scatter: {
+                                    marker: {
+                                        radius: 5
+                                    },
+                                    states: {
+                                        hover: {
+                                            marker: {
+                                                enabled: false
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            series: [{
+                                name: yaxis,
+                                color: 'rgba(223, 83, 83, .8)',
+                                data: data
+                            }]
+                        });
+                    } else {
+                        var categories, y;
+                        categories = [];
+                        y = [];
+                        for (i = 0; i < data.length; i++) {
+                            categories.push(data[i][0]);
+                            y.push(data[i][1]);
                         }
-                    },
-                    labels: {
-                        style: {
-                            fontSize:'16px'
-                        }
-                    }
-                },
-                yAxis: {
-                    title: {
-                        text: '{{yaxis}}',
-                        style: {
-                            fontSize:'24px'
-                        }
-                    },
-                    labels: {
-                        style: {
-                            fontSize:'16px'
-                        }
-                    }
-                },
-                plotOptions: {
-                scatter: {
-                    marker: {
-                        radius: 5
-                    },
-                    states: {
-                        hover: {
-                            marker: {
-                                enabled: false
-                            }
-                        }
+                        $('#plot-div').highcharts({
+                            chart: {
+                                width: 800,
+                                height: 600,
+                                type: 'column'
+                            },
+                            title: {
+                                text: ''
+                            },
+                            xAxis: {
+                                title: {
+                                    text: xaxis,
+                                    style: {
+                                        fontSize: '24px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        fontSize: '16px'
+                                    }
+                                },
+                                categories: categories,
+                                crosshair: true
+                            },
+                            yAxis: {
+                                title: {
+                                    text: yaxis,
+                                    style: {
+                                        fontSize: '24px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        fontSize: '16px'
+                                    }
+                                }
+                            },
+                            plotOptions: {
+                                column: {
+                                    pointPadding: 0.2,
+                                    borderWidth: 0
+                                }
+                            },
+                            series: [{
+                                name: yaxis,
+                                data: y
+                            }]
+                        });
                     }
                 }
-            },
-            series: [{
-                name: 'Data',
-                color: 'rgba(223, 83, 83, .8)',
-                data: data
-                }]
             });
-            {% else %}
-            var categories, y;
-            categories = [];
-            y = [];
-            for (i = 0; i < data.length; i++){
-                categories.push(data[i][0]);
-                y.push(data[i][1]);
-            }
-            $('#plot-div').highcharts({
-                chart: {
-                    width: 800,
-                    height: 600,
-                    type: 'column'
-                },
-                title: {
-                    text: ''
-                },
-                xAxis: {
-                    title: {
-                        text: '{{ xaxis }}',
-                        style: {
-                            fontSize:'24px'
-                        }
-                    },
-                    labels: {
-                        style: {
-                            fontSize:'16px'
-                        }
-                    },
-                    categories: categories,
-                    crosshair: true
-                },
-                yAxis: {
-                    title: {
-                        text: '{{ yaxis }}',
-                        style: {
-                            fontSize:'24px'
-                        }
-                    },
-                    labels: {
-                        style: {
-                            fontSize:'16px'
-                        }
-                    }
-                },
-                plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0
-                    }
-                },
-                series: [{
-                    name: '{{ yaxis }}',
-                    data: y
-                }]
-            });
-            {% endif %}
-          }
+            e.preventDefault();
+
+
+
         });
 
 
-    {% endif %}
-  });
+    });
 </script>
-{% endblock %}
-
-{%  block css %}
-<link rel=stylesheet type=text/css
-          href="{{ url_for('static', filename='index.css') }}">
-<link rel=stylesheet type=text/css
-          href="{{ url_for('static', filename='plot.css') }}">
-{% endblock %}
-
-
-{% block content %}
+{% endblock %} {% block css %}
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='index.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='plot.css') }}"> {% endblock %} {% block content %}
 <h1>Plot</h1>
 
-<form action="/plot" method="get" name="plot">
+<form id="form-plot">
     <p id="query">
         <table>
-        <tr>
-            <td><label>Collection</label></td>
-            <td><select name="collection" class="select">
-            {% for c in collections %}
-            {% if c == active_collection %}
-                <option value="{{c}}" selected="selected">{{c}}</option>
-            {% else %}
-                <option value="{{c}}">{{c}}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label>Plot type</label></td>
-            <td>
-                <select name="plot_type" class="select">
-                    {% if plot_type == "bar" %}
+            <tr>
+                <td>
+                    <label>Collection</label>
+                </td>
+                <td>
+                    <select name="collection" class="select" id="select-collection">
+                        {% for c in collections %} {% if c == active_collection %}
+                        <option value="{{c}}" selected="selected">{{c}}</option>
+                        {% else %}
+                        <option value="{{c}}">{{c}}</option>
+                        {% endif %} {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Plot type</label>
+                </td>
+                <td>
+                    <select name="plot_type" class="select" id="select-plot_type">
+                        {% if plot_type == "bar" %}
                         <option value="scatter">scatter</option>
                         <option value="bar" selected="selected">bar</option>
-                    {% else %}
+                        {% else %}
                         <option value="scatter" selected="selected">scatter</option>
                         <option value="bar">bar</option>
-                    {% endif %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td><label>Filter</label></td>
-            <td><input type="text" name="search_string"
-                       placeholder="Type query..." size="30"
-                       value="{{search_string|safe}}">
-            </td>
-        </tr>
-        <tr>
-            <td><label>X-axis</label></td>
-            <td><input type="text" name="xaxis"
-                       placeholder="E.g., year" size="30"
-                       value="{{xaxis}}">
-            </td>
-        </tr>
-        <tr>
-            <td><label>Y-axis</label></td>
-            <td><input type="text" name="yaxis"
-                       placeholder="E.g., earnings" size="30"
-                       value="{{yaxis}}">
-            </td>
-        </tr>
+                        {% endif %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Filter</label>
+                </td>
+                <td>
+                    <input type="text" name="search_string" id="input-search" placeholder="Type query..." size="30" value="{{search_string|safe}}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>X-axis</label>
+                </td>
+                <td>
+                    <input type="text" name="xaxis" id="input-xaxis" placeholder="E.g., year" size="30" value="{{xaxis}}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Y-axis</label>
+                </td>
+                <td>
+                    <input type="text" name="yaxis" id="input-yaxis" placeholder="E.g., earnings" size="30" value="{{yaxis}}">
+                </td>
+            </tr>
         </table>
     </p>
     <p>
-        <input type="submit" name="submit" value="Plot">
+        <input id="plot-button" type="submit" name="submit" value="Plot">
     </p>
 </form>
 
 <div id="plot-div"></div>
 
 {% if error_message %}
-<h2>{{ error_message }}</h2>
-{% endif %}
-
-
-{% endblock %}
+<h2>{{ error_message }}</h2> {% endif %} {% endblock %}
