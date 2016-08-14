@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.7.2
+------
+* Use entry_points for scripts.
+
 v0.7.1
 ------
 * Allow persistent plotting.
