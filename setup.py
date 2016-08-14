@@ -48,5 +48,9 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
     ],
-    scripts=glob.glob(os.path.join(SETUP_PTH, "scripts", "*"))
+    entry_points={
+          'console_scripts': [
+              'flm = flamyngo.app:main'
+          ]
+    }
 )
