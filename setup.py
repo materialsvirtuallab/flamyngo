@@ -50,7 +50,7 @@ setup(
     ],
     entry_points={
           'console_scripts': [
-              'flm = flamyngo.app:main'
+              'flm = flamyngo.flm:main'
           ]
     }
 )
