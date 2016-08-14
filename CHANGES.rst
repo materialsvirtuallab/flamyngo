@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.7.3
+------
+* Bug fix for entry_points.
+
 v0.7.2
 ------
 * Use entry_points for scripts.
