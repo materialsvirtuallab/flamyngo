@@ -81,7 +81,8 @@ def query():
                     break
             if not criteria:
                 clean_search_string = search_string.strip()
-                if clean_search_string[0] != "{" and clean_search_string[-1] != "}":
+                if clean_search_string[0] != "{" or \
+                        clean_search_string[-1] != "}":
                     clean_search_string = "{" + clean_search_string + "}"
                 criteria = json.loads(clean_search_string)
             results = []
