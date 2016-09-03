@@ -80,6 +80,9 @@ def query():
                 criteria[regex[0]] = process(search_string, regex[2])
                 break
         if not criteria:
+            search_string = search_string.strip()
+            if search_string[0] != "{" and search_string[-1] != "}":
+                search_string = "{" + search_string + "}"
             criteria = json.loads(search_string)
         results = []
         for r in DB[cname].find(criteria, projection=projection):
