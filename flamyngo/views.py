@@ -72,40 +72,43 @@ def query():
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
     projection = [t[0] for t in settings["summary"]]
-
-    if search_string.strip() != "":
-        criteria = {}
-        for regex in settings["query"]:
-            if re.match(r'%s' % regex[1], search_string):
-                criteria[regex[0]] = process(search_string, regex[2])
-                break
-        if not criteria:
-            clean_search_string = search_string.strip()
-            if clean_search_string[0] != "{" and clean_search_string[-1] != "}":
-                clean_search_string = "{" + clean_search_string + "}"
-            criteria = json.loads(clean_search_string)
+    try:
+        if search_string.strip() != "":
+            criteria = {}
+            for regex in settings["query"]:
+                if re.match(r'%s' % regex[1], search_string):
+                    criteria[regex[0]] = process(search_string, regex[2])
+                    break
+            if not criteria:
+                clean_search_string = search_string.strip()
+                if clean_search_string[0] != "{" and clean_search_string[-1] != "}":
+                    clean_search_string = "{" + clean_search_string + "}"
+                criteria = json.loads(clean_search_string)
+            results = []
+            for r in DB[cname].find(criteria, projection=projection):
+                processed = {}
+                mapped_names = {}
+                fields = []
+                for m in settings["summary"]:
+                    if len(m) == 2:
+                        k, v = m
+                        mapped_k = k
+                    elif len(m) == 3:
+                        k, v, mapped_k = m
+                    else:
+                        raise ValueError("Invalid summary settings!")
+                    val = _get_val(k, r, v.strip())
+                    mapped_names[k] = mapped_k
+                    processed[mapped_k] = val
+                    fields.append(mapped_k)
+                results.append(processed)
+            error_message = None
+        else:
+            results = []
+            error_message = "No results!"
+    except Exception as ex:
+        error_message = str(ex)
         results = []
-        for r in DB[cname].find(criteria, projection=projection):
-            processed = {}
-            mapped_names = {}
-            fields = []
-            for m in settings["summary"]:
-                if len(m) == 2:
-                    k, v = m
-                    mapped_k = k
-                elif len(m) == 3:
-                    k, v, mapped_k = m
-                else:
-                    raise ValueError("Invalid summary settings!")
-                val = _get_val(k, r, v.strip())
-                mapped_names[k] = mapped_k
-                processed[mapped_k] = val
-                fields.append(mapped_k)
-            results.append(processed)
-        error_message = None
-    else:
-        results = []
-        error_message = "No results!"
     return make_response(render_template(
         'index.html', collection_name=cname,
         results=results, fields=fields, search_string=search_string,
