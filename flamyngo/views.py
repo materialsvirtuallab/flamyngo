@@ -106,10 +106,14 @@ def query():
             error_message = None
         else:
             results = []
+            fields = []
+            mapped_names = []
             error_message = "No results!"
     except Exception as ex:
         error_message = str(ex)
+        fields = []
         results = []
+        mapped_names = []
     return make_response(render_template(
         'index.html', collection_name=cname,
         results=results, fields=fields, search_string=search_string,
