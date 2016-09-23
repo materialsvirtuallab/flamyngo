@@ -59,6 +59,19 @@ def requires_auth(f):
     return decorated
 
 
+def get_mapped_name(settings, name):
+    # The following allows used of mapped names in search criteria.
+    name_mappings = {}
+    for m in settings["summary"]:
+        if len(m) == 2:
+            k, v = m
+            name_mappings[k] = k
+        elif len(m) == 3:
+            k, v, mapped_k = m
+            name_mappings[mapped_k] = k
+    return name_mappings.get(name, name)
+
+
 def process_search_string(search_string, settings):
     criteria = {}
     for regex in settings["query"]:
@@ -71,16 +84,9 @@ def process_search_string(search_string, settings):
                         clean_search_string[-1] != "}":
             clean_search_string = "{" + clean_search_string + "}"
         criteria = json.loads(clean_search_string)
-        # The following allows used of mapped names in search criteria.
-        name_mappings = {}
-        for m in settings["summary"]:
-            if len(m) == 2:
-                k, v = m
-                name_mappings[k] = k
-            elif len(m) == 3:
-                k, v, mapped_k = m
-                name_mappings[mapped_k] = k
-        criteria = {name_mappings.get(k, k): v for k, v in criteria.items()}
+
+        criteria = {get_mapped_name(settings, k): v
+                    for k, v in criteria.items()}
     return criteria
 
 
@@ -167,6 +173,9 @@ def get_data():
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
     yaxis = request.args.get("yaxis")
+
+    xaxis = get_mapped_name(settings, xaxis)
+    yaxis = get_mapped_name(settings, yaxis)
 
     projection = [xaxis, yaxis]
 

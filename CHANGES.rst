@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.8.1
+------
+* Also allow mapped names in plotting.
+
 v0.8.0
 ------
 * Allow use of mapped names in query, making it easier.
