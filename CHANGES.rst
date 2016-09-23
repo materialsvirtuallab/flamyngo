@@ -1,9 +1,13 @@
 Change log
 ==========
 
+v0.8.0
+------
+* Allow use of mapped names in query, making it easier.
+
 v0.7.5
 ------
-1. Make error messages more clear.
+* Make error messages more clear.
 
 v0.7.3
 ------

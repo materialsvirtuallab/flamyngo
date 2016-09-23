@@ -59,6 +59,31 @@ def requires_auth(f):
     return decorated
 
 
+def process_search_string(search_string, settings):
+    criteria = {}
+    for regex in settings["query"]:
+        if re.match(r'%s' % regex[1], search_string):
+            criteria[regex[0]] = process(search_string, regex[2])
+            break
+    if not criteria:
+        clean_search_string = search_string.strip()
+        if clean_search_string[0] != "{" or \
+                        clean_search_string[-1] != "}":
+            clean_search_string = "{" + clean_search_string + "}"
+        criteria = json.loads(clean_search_string)
+        # The following allows used of mapped names in search criteria.
+        name_mappings = {}
+        for m in settings["summary"]:
+            if len(m) == 2:
+                k, v = m
+                name_mappings[k] = k
+            elif len(m) == 3:
+                k, v, mapped_k = m
+                name_mappings[mapped_k] = k
+        criteria = {name_mappings.get(k, k): v for k, v in criteria.items()}
+    return criteria
+
+
 @app.route('/', methods=['GET'])
 @requires_auth
 def index():
@@ -78,17 +103,8 @@ def query():
     error_message = None
     try:
         if search_string.strip() != "":
-            criteria = {}
-            for regex in settings["query"]:
-                if re.match(r'%s' % regex[1], search_string):
-                    criteria[regex[0]] = process(search_string, regex[2])
-                    break
-            if not criteria:
-                clean_search_string = search_string.strip()
-                if clean_search_string[0] != "{" or \
-                        clean_search_string[-1] != "}":
-                    clean_search_string = "{" + clean_search_string + "}"
-                criteria = json.loads(clean_search_string)
+            criteria = process_search_string(search_string, settings)
+            print(criteria)
             results = []
             for r in DB[cname].find(criteria, projection=projection):
                 processed = {}
@@ -155,13 +171,7 @@ def get_data():
     projection = [xaxis, yaxis]
 
     if search_string.strip() != "":
-        criteria = {}
-        for regex in settings["query"]:
-            if re.match(r'%s' % regex[1], search_string):
-                criteria[regex[0]] = process(search_string, regex[2])
-                break
-        if not criteria:
-            criteria = json.loads(search_string)
+        criteria = process_search_string(search_string, settings)
         data = []
         for r in DB[cname].find(criteria, projection=projection):
             x = _get_val(xaxis, r, None)
@@ -225,8 +235,7 @@ def _get_val(k, d, processing_func):
                 val = val[int(t)]
         val = process(val, processing_func)
     except Exception as ex:
-        print(str(ex))
-        # Return the base value if we can descend into the data.
+        # Return the base value if we cannot descend into the data.
         val = None
     return val
 
