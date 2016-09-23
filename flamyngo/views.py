@@ -72,6 +72,10 @@ def query():
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
     projection = [t[0] for t in settings["summary"]]
+    fields = None
+    results = None
+    mapped_names = None
+    error_message = None
     try:
         if search_string.strip() != "":
             criteria = {}
@@ -103,17 +107,13 @@ def query():
                     processed[mapped_k] = val
                     fields.append(mapped_k)
                 results.append(processed)
-            error_message = None
+            if not results:
+                error_message = "No results!"
         else:
-            results = []
-            fields = []
-            mapped_names = []
             error_message = "No results!"
     except Exception as ex:
         error_message = str(ex)
-        fields = []
-        results = []
-        mapped_names = []
+
     return make_response(render_template(
         'index.html', collection_name=cname,
         results=results, fields=fields, search_string=search_string,

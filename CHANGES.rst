@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.7.5
+------
+1. Make error messages more clear.
+
 v0.7.3
 ------
 * Bug fix for entry_points.
