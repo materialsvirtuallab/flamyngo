@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.9.0
+------
+* Use aliases to specify mappings instead of unintuitive list.
+
 v0.8.1
 ------
 * Also allow mapped names in plotting.

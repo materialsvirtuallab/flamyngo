@@ -51,7 +51,7 @@ collections:
       - [last_name, '^[A-Za-z]+$', str]
       - [phone_number, '^[0-9]+$', int]
 
-    # A default list of projection key, processing function and alias to display as a table. 
+    # A default list of projection key, processing function to display as a table. 
     # Again, processing function can be any callable, and you can define your own.
     # For example, you can take in a float and render it as a fixed decimal.
     # The alias is optional. If provided, the alias will be used as the column name.
@@ -59,7 +59,13 @@ collections:
       - [_id, str]
       - [first_name, str]
       - [last_name, str]
-      - [phone_number, str, number]
+      - [phone_number, str]
+
+    # Aliases for various fields. These are used to display short names in the summary
+    # table. You can also directly perform queries using the short names instead of
+    # using the long names.
+    aliases:
+        phone_number: number
 
     # The following defines unique identifiers for each doc. This allows each
     # specific doc to be queried and displayed using this key. If this key is

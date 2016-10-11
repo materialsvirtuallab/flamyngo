@@ -61,14 +61,7 @@ def requires_auth(f):
 
 def get_mapped_name(settings, name):
     # The following allows used of mapped names in search criteria.
-    name_mappings = {}
-    for m in settings["summary"]:
-        if len(m) == 2:
-            k, v = m
-            name_mappings[k] = k
-        elif len(m) == 3:
-            k, v, mapped_k = m
-            name_mappings[mapped_k] = k
+    name_mappings = {v: k for k, v in settings.get("aliases", {}).items()}
     return name_mappings.get(name, name)
 
 
@@ -110,7 +103,6 @@ def query():
     try:
         if search_string.strip() != "":
             criteria = process_search_string(search_string, settings)
-            print(criteria)
             results = []
             for r in DB[cname].find(criteria, projection=projection):
                 processed = {}
@@ -119,11 +111,9 @@ def query():
                 for m in settings["summary"]:
                     if len(m) == 2:
                         k, v = m
-                        mapped_k = k
-                    elif len(m) == 3:
-                        k, v, mapped_k = m
                     else:
                         raise ValueError("Invalid summary settings!")
+                    mapped_k = settings.get("aliases", {}).get(k, k)
                     val = _get_val(k, r, v.strip())
                     mapped_names[k] = mapped_k
                     processed[mapped_k] = val
