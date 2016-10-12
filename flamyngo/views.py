@@ -115,6 +115,7 @@ def query():
                         raise ValueError("Invalid summary settings!")
                     mapped_k = settings.get("aliases", {}).get(k, k)
                     val = _get_val(k, r, v.strip())
+                    val = val if val is not None else ""
                     mapped_names[k] = mapped_k
                     processed[mapped_k] = val
                     fields.append(mapped_k)
