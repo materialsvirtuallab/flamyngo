@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.9.2
+------
+* Minor improvements in UI.
+
 v0.9.0
 ------
 * Use aliases to specify mappings instead of unintuitive list.

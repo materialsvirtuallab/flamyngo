@@ -81,7 +81,7 @@ $(function() {
         {% for f in fields %}
             {% if f == mapped_names[unique_key] %}
                 <td class="centered">
-                    <a href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]|safe}}</a>
+                    <a target="_blank" href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]|safe}}</a>
                 </td>
             {% else %}
                 <td class="centered">{{r[f]|safe}}</td>
