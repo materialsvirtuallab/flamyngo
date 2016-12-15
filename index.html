@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Flamyngo : Flask frontend for MongoDB">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Flamyngo</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/materialsvirtuallab/flamyngo">View on GitHub</a>
+
+          <h1 id="project_title">Flamyngo</h1>
+          <h2 id="project_tagline">Flask frontend for MongoDB</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/materialsvirtuallab/flamyngo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/materialsvirtuallab/flamyngo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="flamyngo" class="anchor" href="#flamyngo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Flamyngo</h1>
+
+<p>Flamyngo is a customizable Flask frontend for MongoDB.</p>
+
+<p>At the most basic level, the aim is to delegate most settings to a YAML
+configuration file, which then allows the  underlying code to be reused for
+any conceivable collection.</p>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h1>
+
+<p>Clone or download the code. Install it if you wish.</p>
+
+<p>In the root directory, run:</p>
+
+<div class="highlight highlight-source-shell"><pre>python scripts/flm --config <span class="pl-k">&lt;</span>path/to/config.yaml<span class="pl-k">&gt;</span></pre></div>
+
+<p>If <code>--config</code> is not provided, it defaults to <code>$HOME/.flamyngo.yaml</code>.</p>
+
+<h1>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h1>
+
+<p>A sample commented configuration yaml file is given below.</p>
+
+<div class="highlight highlight-source-yaml"><pre><span class="pl-c"># MongoDB settings</span>
+<span class="pl-ent">db:</span>
+  <span class="pl-ent">host:</span> <span class="pl-s">mongo.host.com</span>
+  <span class="pl-ent">port:</span> <span class="pl-c1">27017</span>
+  <span class="pl-ent">username:</span> <span class="pl-s">user</span>
+  <span class="pl-ent">password:</span> <span class="pl-s">password</span>
+  <span class="pl-ent">database:</span> <span class="pl-s">mydb</span>
+
+<span class="pl-c"># List of collection settings. Note that more than one collection is supported,</span>
+<span class="pl-c"># though only one collection can be queried at any one time.</span>
+<span class="pl-ent">collections:</span>
+  -
+    <span class="pl-ent">name:</span> <span class="pl-s">mycoll</span>
+
+<span class="pl-s">    </span><span class="pl-c"># These set the special queries as an ordered list of [&lt;key&gt;, &lt;regex string&gt;, &lt;type&gt;].</span>
+<span class="pl-s">    </span><span class="pl-c"># If the query string satisfies any of the regex, the Mongo query is set as</span>
+    <span class="pl-c"># {&lt;key&gt;: type(&lt;search_string&gt;)}. This allows for much more friendly setups for common</span>
+    <span class="pl-c"># queries that do not require a user to type in verbose Mongo criteria. Each</span>
+    <span class="pl-c"># regex should be uniquely identifying.</span>
+    <span class="pl-c"># Types can be any kind of callable function that takes in a string and return</span>
+    <span class="pl-c"># a value without other arguments. E.g., int, str, float, etc. You can support</span>
+    <span class="pl-c"># more powerful conversions by writing your own processing function, e.g., </span>
+    <span class="pl-c"># mymodule.convert_degress_to_radians. </span>
+    <span class="pl-c"># If none of the regex works, the criteria is interpreted as a Mongo-like dict query.</span>
+    <span class="pl-ent">query:</span>
+      - <span class="pl-s">[last_name, '^[A-Za-z]+$', str]</span>
+      - <span class="pl-s">[phone_number, '^[0-9]+$', int]</span>
+
+<span class="pl-s">    </span><span class="pl-c"># A default list of projection key, processing function to display as a table. </span>
+<span class="pl-s">    </span><span class="pl-c"># Again, processing function can be any callable, and you can define your own.</span>
+<span class="pl-s">    </span><span class="pl-c"># For example, you can take in a float and render it as a fixed decimal.</span>
+<span class="pl-s">    </span><span class="pl-c"># The alias is optional. If provided, the alias will be used as the column name.</span>
+    <span class="pl-ent">summary:</span>
+      - <span class="pl-s">[_id, str]</span>
+      - <span class="pl-s">[first_name, str]</span>
+      - <span class="pl-s">[last_name, str]</span>
+      - <span class="pl-s">[phone_number, str]</span>
+
+<span class="pl-s">    </span><span class="pl-c"># Aliases for various fields. These are used to display short names in the summary</span>
+<span class="pl-s">    </span><span class="pl-c"># table. You can also directly perform queries using the short names instead of</span>
+<span class="pl-s">    </span><span class="pl-c"># using the long names.</span>
+    <span class="pl-ent">aliases:</span>
+        <span class="pl-ent">phone_number:</span> <span class="pl-s">number</span>
+
+<span class="pl-s">    </span><span class="pl-c"># The following defines unique identifiers for each doc. This allows each</span>
+<span class="pl-s">    </span><span class="pl-c"># specific doc to be queried and displayed using this key. If this key is</span>
+<span class="pl-s">    </span><span class="pl-c"># present in the default list of projections, a link will be created to each</span>
+<span class="pl-s">    </span><span class="pl-c"># unique document.</span>
+    <span class="pl-ent">unique_key:</span> <span class="pl-s">_id</span>
+    <span class="pl-ent">unique_key_type:</span> <span class="pl-s">bson.objectid.ObjectId</span>
+
+<span class="pl-c"># Basic auth can be set up by specifying user and password below. If these are not</span>
+<span class="pl-c"># set, then no authentication. Note that this is not the most secure. It is merely</span>
+<span class="pl-c"># used for a basic setup. For high security, look into proper implementations.</span>
+<span class="pl-ent">AUTH_USER:</span> <span class="pl-s">Iam</span>
+<span class="pl-ent">AUTH_PASSWD:</span> <span class="pl-s">Pink</span></pre></div>
+
+<h1>
+<a id="urls" class="anchor" href="#urls" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>URLs</h1>
+
+<p>Assuming that you are running on local host at port 5000, the initial
+landing page will be at http://localhost:5000.</p>
+
+<p>Pages for individual docs following the format 
+http://localhost:5000/[collection_name]/doc/[unique_id].</p>
+
+<p>A RESTful link for downloading individual docs as a json response is 
+given as http://localhost:5000/[collection_name]/doc/[unique_id]/json.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Flamyngo maintained by <a href="https://github.com/materialsvirtuallab">materialsvirtuallab</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
