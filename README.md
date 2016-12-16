@@ -1,26 +1,29 @@
 # Flamyngo
 
-Flamyngo is a customizable Flask frontend for MongoDB.
-
-At the most basic level, the aim is to delegate most settings to a YAML
-configuration file, which then allows the  underlying code to be reused for
-any conceivable collection.
+Flamyngo is a YAML-powered Flask frontend for MongoDB. The aim is to delegate 
+most settings to a YAML configuration file, which then allows the  underlying 
+code to be reused for any conceivable collection.
 
 # Usage
 
-Clone or download the code. Install it if you wish.
-
-In the root directory, run:
+Install via pip:
 
 ```bash
-python scripts/flm --config <path/to/config.yaml>
+pip install flamyngo
 ```
 
-If `--config` is not provided, it defaults to `$HOME/.flamyngo.yaml`.
+Create your `.flamyngo.yaml`.
+
+```bash
+flm --config <path/to/config.yaml>
+```
+
+If `--config` is not provided, it defaults to `~/.flamyngo.yaml`.
 
 # Configuration
 
-A sample commented configuration yaml file is given below.
+A sample commented configuration yaml file is given below. You can start from
+the one below and customize it to suit your needs.
 
 ```yaml
 # MongoDB settings
@@ -65,7 +68,7 @@ collections:
     # table. You can also directly perform queries using the short names instead of
     # using the long names.
     aliases:
-        phone_number: number
+      phone_number: number
 
     # The following defines unique identifiers for each doc. This allows each
     # specific doc to be queried and displayed using this key. If this key is
