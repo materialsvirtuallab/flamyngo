@@ -94,6 +94,3 @@ http://localhost:5000/[collection_name]/doc/[unique_id].
 
 A RESTful link for downloading individual docs as a json response is 
 given as http://localhost:5000/[collection_name]/doc/[unique_id]/json.
-
-
-
