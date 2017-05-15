@@ -2,7 +2,8 @@
 
 Flamyngo is a YAML-powered Flask frontend for MongoDB. The aim is to delegate 
 most settings to a YAML configuration file, which then allows the  underlying 
-code to be reused for any conceivable collection.
+code to be reused for any conceivable collection. The official web page is at
+https://materialsvirtuallab.github.io/flamyngo/.
 
 # Usage
 
