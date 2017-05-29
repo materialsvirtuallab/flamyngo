@@ -12,11 +12,23 @@
 <script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
 <script src="//cdn.datatables.net/buttons/1.2.1/js/buttons.html5.min.js"></script>
 <script src="//cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.js"></script>
 
 <script type="text/javascript">
 $(function() {
     $('input[type=submit]').button();
     $("#select-collection" ).selectmenu();
+    $("#query-input").autocomplete({
+        source:function(request, response) {
+            $.getJSON("{{url_for('autocomplete')}}",{
+                term: request.term, 
+                collection : $("#select-collection").val(),
+            }, function(data) {
+                response(data.matching_results); // matching_results from jsonify
+            });
+        },
+        minLength: 1,
+    });
     $('#results-table').DataTable({
         dom: 'Bfrtip',
         buttons: [
@@ -34,6 +46,8 @@ $(function() {
           href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
 <link rel=stylesheet type=text/css
           href="https://cdn.datatables.net/buttons/1.2.1/css/buttons.dataTables.min.css">
+<link rel=stylesheet type=test/css
+          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.min.css">
 
 
 {% endblock %}
@@ -55,7 +69,7 @@ $(function() {
 </select>
 </p>
 <p id="query">
-<input type="text" name="search_string"
+<input type="text" name="search_string" id="query-input"
                placeholder="Type query..." size="50"
        value="{{search_string}}"></p>
 <p id="helptext">{{ helptext | safe }}</p>
