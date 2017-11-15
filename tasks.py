@@ -73,7 +73,9 @@ from flamyngo import __version__ as ver
 
 @task
 def publish(ctx):
-    ctx.run("python setup.py release")
+    ctx.run("rm dist/*.*", warn=True)
+    ctx.run("python setup.py register sdist bdist_wheel")
+    ctx.run("twine upload dist/*")
 
 
 @task
@@ -81,17 +83,6 @@ def setver(ctx):
     ctx.run("sed s/version=.*,/version=\\\"{}\\\",/ setup.py > newsetup"
           .format(ver))
     ctx.run("mv newsetup setup.py")
-
-
-# @task
-# def update_doc(ctx):
-#     with cd("docs/_build/html/"):
-#         ctx.run("git pull")
-#     make_doc(ctx)
-#     with cd("docs/_build/html/"):
-#         ctx.run("git add .")
-#         ctx.run("git commit -a -m \"Update dev docs\"")
-#         ctx.run("git push origin gh-pages")
 
 
 @task
@@ -129,19 +120,6 @@ def release_github(ctx):
     print(response.text)
 
 
-# @task
-# def update_changelog(ctx):
-#     output = subprocess.check_output(["git", "log", "--pretty=format:%s",
-#                                       "v%s..HEAD" % ver])
-#     lines = ["* " + l for l in output.decode("utf-8").strip().split("\n")]
-#     with open("CHANGES.rst") as f:
-#         contents = f.read()
-#     l = "=========="
-#     toks = contents.split(l)
-#     toks.insert(-1, "\n\nvXXXX\n--------\n" + "\n".join(lines))
-#     with open("CHANGES.rst", "w") as f:
-#         f.write(toks[0] + l + "".join(toks[1:]))
-
 @task
 def release(ctx, notest=False):
     setver(ctx)
@@ -151,9 +129,3 @@ def release(ctx, notest=False):
     merge_stable(ctx)
     # update_doc(ctx)
     release_github(ctx)
-
-
-# @task
-# def open_doc(ctx):
-#     pth = os.path.abspath("docs/_build/html/index.html")
-#     webbrowser.open("file://" + pth)
