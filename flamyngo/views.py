@@ -24,6 +24,7 @@ CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"],
 DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
+HELPTXT = SETTINGS.get("help", "")
 CNAMES = [d["name"] for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
@@ -86,7 +87,8 @@ def process_search_string(search_string, settings):
 @app.route('/', methods=['GET'])
 @requires_auth
 def index():
-    return make_response(render_template('index.html', collections=CNAMES))
+    return make_response(render_template('index.html', collections=CNAMES,
+                                         helptext=HELPTXT))
 
 
 @app.route('/query', methods=['GET'])

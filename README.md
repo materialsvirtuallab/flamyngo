@@ -27,6 +27,8 @@ A sample commented configuration yaml file is given below. You can start from
 the one below and customize it to suit your needs.
 
 ```yaml
+help: This is some help.
+
 # MongoDB settings
 db:
   host: mongo.host.com
