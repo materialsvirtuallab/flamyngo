@@ -191,6 +191,16 @@ def get_doc(collection_name, uid):
     )
 
 
+@app.route('/<string:collection_name>/doc/<string:uid>/<string:field>')
+@requires_auth
+def get_doc_field(collection_name, uid, field):
+    settings = CSETTINGS[collection_name]
+    criteria = {
+        settings["unique_key"]: process(uid, settings["unique_key_type"])}
+    doc = DB[collection_name].find_one(criteria, projection=[field])
+    return Response(str(doc[field]), mimetype='text/plain')
+
+
 @app.route('/<string:collection_name>/doc/<string:uid>/json')
 @requires_auth
 def get_doc_json(collection_name, uid):
