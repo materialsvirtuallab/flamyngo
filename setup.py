@@ -24,7 +24,7 @@ Detailed usage instructions are available at the project's `Github page
 setup(
     name="flamyngo",
     packages=find_packages(),
-    version="0.9.5",
+    version="0.9.6",
     install_requires=["flask", "pyyaml", "monty>=0.7.0", "pymongo"],
     package_data={"flamyngo": ["static/*.*", "static/js/*.*",
                                "templates/*"]},
