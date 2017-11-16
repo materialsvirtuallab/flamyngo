@@ -1,7 +1,7 @@
 Change log
 ==========
 
-v0.9.5
+v0.9.6
 ------
 * Support repeated use of same field.
 
