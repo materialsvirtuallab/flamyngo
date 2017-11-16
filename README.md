@@ -85,6 +85,7 @@ collections:
 # used for a basic setup. For high security, look into proper implementations.
 AUTH_USER: Iam
 AUTH_PASSWD: Pink
+API_KEY: IamPink
 ```
 
 # URLs

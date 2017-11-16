@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.9.7
+------
+* Support the use of API keys as auth.
+
 v0.9.6
 ------
 * Support repeated use of same field.
