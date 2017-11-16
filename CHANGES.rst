@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.9.8
+------
+* Add unique_ids for REST API.
+
 v0.9.7
 ------
 * Support the use of API keys as auth.

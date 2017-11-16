@@ -189,6 +189,14 @@ def get_data():
     return jsonify(jsanitize(data))
 
 
+@app.route('/<string:collection_name>/unique_ids')
+@requires_auth
+def get_ids(collection_name):
+    settings = CSETTINGS[collection_name]
+    doc = DB[collection_name].distinct(settings["unique_key"])
+    return jsonify(jsanitize(doc))
+
+
 @app.route('/<string:collection_name>/doc/<string:uid>')
 @requires_auth
 def get_doc(collection_name, uid):

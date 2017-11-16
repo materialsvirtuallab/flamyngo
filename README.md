@@ -96,5 +96,8 @@ landing page will be at http://localhost:5000.
 Pages for individual docs following the format 
 http://localhost:5000/[collection_name]/doc/[unique_id].
 
-A RESTful link for downloading individual docs as a json response is 
-given as http://localhost:5000/[collection_name]/doc/[unique_id]/json.
+# REST API
+
+* Getting all unique ids for a collection: http://localhost:5000/[collection_name]/unique_ids
+* Getting individual docs as a json response: http://localhost:5000/[collection_name]/doc/[unique_id]/json.
+* Getting a field of an individual doc as a plain text response: http://localhost:5000/[collection_name]/doc/[unique_id]/<field>.
