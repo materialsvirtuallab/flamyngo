@@ -29,6 +29,7 @@ CNAMES = [d["name"] for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
 AUTH_PASSWD = SETTINGS.get("AUTH_PASSWD", None)
+API_KEY = SETTINGS.get("API_KEY", None)
 
 
 def check_auth(username, password):
@@ -53,6 +54,9 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
+        api_key = request.headers.get("API_KEY") or request.args.get("API_KEY")
+        if (API_KEY is not None) and api_key == API_KEY:
+            return f(*args, **kwargs)
         if (AUTH_USER is not None) and (not auth or not check_auth(
                 auth.username, auth.password)):
             return authenticate()
