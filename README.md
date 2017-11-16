@@ -27,7 +27,8 @@ A sample commented configuration yaml file is given below. You can start from
 the one below and customize it to suit your needs.
 
 ```yaml
-help: This is some help.
+# Provide some help text (html format) for the query.
+help: "Supported queries: last name (string)"
 
 # MongoDB settings
 db:

@@ -58,7 +58,7 @@ $(function() {
 <input type="text" name="search_string"
                placeholder="Type query..." size="50"
        value="{{search_string}}"></p>
-<p id="helptext">{{ helptext }}</p>
+<p id="helptext">{{ helptext | safe }}</p>
 <p>
 <input type="submit" name="submit" value="Search">
 </p>
