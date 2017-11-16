@@ -1,7 +1,7 @@
 Change log
 ==========
 
-v0.9.8
+v0.9.9
 ------
 * Add unique_ids for REST API.
 
