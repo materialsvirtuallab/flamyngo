@@ -86,7 +86,7 @@ $(function() {
                     <a target="_blank" href="/{{collection_name}}/doc/{{r[f]}}">{{r[f]|safe}}</a>
                 </td>
             {% else %}
-                <td class="centered">{{r[f]|safe}}</td>
+                <td class="centered">{{r[loop.index0]|safe}}</td>
             {% endif %}
         {% endfor %}
     </tr>

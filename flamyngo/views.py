@@ -107,7 +107,7 @@ def query():
             criteria = process_search_string(search_string, settings)
             results = []
             for r in DB[cname].find(criteria, projection=projection):
-                processed = {}
+                processed = []
                 mapped_names = {}
                 fields = []
                 for m in settings["summary"]:
@@ -119,7 +119,7 @@ def query():
                     val = _get_val(k, r, v.strip())
                     val = val if val is not None else ""
                     mapped_names[k] = mapped_k
-                    processed[mapped_k] = val
+                    processed.append(val)
                     fields.append(mapped_k)
                 results.append(processed)
             if not results:

@@ -1,6 +1,10 @@
 Change log
 ==========
 
+v0.9.5
+------
+* Support repeated use of same field.
+
 v0.9.2
 ------
 * Minor improvements in UI.
