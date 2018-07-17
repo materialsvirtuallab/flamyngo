@@ -5,6 +5,8 @@ most settings to a YAML configuration file, which then allows the  underlying
 code to be reused for any conceivable collection. The official web page is at
 https://materialsvirtuallab.github.io/flamyngo/.
 
+The complete change log is available [here](https://materialsvirtuallab.github.io/flamyngo//CHANGES).
+
 # Usage
 
 Install via pip:
