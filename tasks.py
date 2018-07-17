@@ -42,12 +42,12 @@ def merge_stable(ctx):
 
 @task
 def release_github(ctx):
-    with open("CHANGES.rst") as f:
+    with open("CHANGES.md") as f:
         contents = f.read()
-    toks = re.split("\-+", contents)
+    toks = re.split("##", contents)
     desc = toks[1].strip()
     toks = desc.split("\n")
-    desc = "\n".join(toks[:-1]).strip()
+    desc = "\n".join(toks[1:]).strip()
     payload = {
         "tag_name": "v" + ver,
         "target_commitish": "master",
@@ -56,6 +56,7 @@ def release_github(ctx):
         "draft": False,
         "prerelease": False
     }
+    
     response = requests.post(
         "https://api.github.com/repos/materialsvirtuallab/flamyngo/releases",
         data=json.dumps(payload),
