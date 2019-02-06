@@ -25,7 +25,7 @@ DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
 HELPTXT = SETTINGS.get("help", "")
-CNAMES = [d["name"] for d in SETTINGS["collections"]]
+CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count()) for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
 AUTH_PASSWD = SETTINGS.get("AUTH_PASSWD", None)
@@ -102,7 +102,7 @@ def autocomplete():
     criteria={}
 
     search_string = request.args.get('term')
-    cname = request.args.get("collection")
+    cname = request.args.get("collection").split(":")[0]
 
     collection = DB[cname]
     settings = CSETTINGS[cname]
@@ -138,7 +138,7 @@ def autocomplete():
 @app.route('/query', methods=['GET'])
 @requires_auth
 def query():
-    cname = request.args.get("collection")
+    cname = request.args.get("collection").split(":")[0]
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
     projection = [t[0] for t in settings["summary"]]
@@ -185,7 +185,7 @@ def query():
 @app.route('/plot', methods=['GET'])
 @requires_auth
 def plot():
-    cname = request.args.get("collection")
+    cname = request.args.get("collection").split(":")[0]
     if not cname:
         return make_response(render_template('plot.html', collections=CNAMES))
     plot_type = request.args.get("plot_type") or "scatter"
@@ -205,7 +205,7 @@ def plot():
 @app.route('/data', methods=['GET'])
 @requires_auth
 def get_data():
-    cname = request.args.get("collection")
+    cname = request.args.get("collection").split(":")[0]
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
