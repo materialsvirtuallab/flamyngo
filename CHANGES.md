@@ -1,5 +1,8 @@
 # Change log
 
+## v0.9.12
+* Fix bad introduction of regex.
+
 ## v0.9.11
 * Add number of documents in collection to dropdown.
 

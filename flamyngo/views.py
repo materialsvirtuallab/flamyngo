@@ -70,11 +70,30 @@ def get_mapped_name(settings, name):
     return name_mappings.get(name, name)
 
 
-def process_search_string(search_string, settings):
+def process_search_string_regex(search_string, settings):
     criteria = {}
     for regex in settings["query"]:
         if re.match(r'%s' % regex[1], search_string):
             criteria[regex[0]] = {'$regex' : str(process(search_string, regex[2]))}
+            break
+    if not criteria:
+        clean_search_string = search_string.strip()
+        if clean_search_string[0] != "{" or \
+                        clean_search_string[-1] != "}":
+            clean_search_string = "{" + clean_search_string + "}"
+        criteria = json.loads(clean_search_string)
+
+        criteria = {get_mapped_name(settings, k): v
+                    for k, v in criteria.items()}
+    return criteria
+
+
+
+def process_search_string(search_string, settings):
+    criteria = {}
+    for regex in settings["query"]:
+        if re.match(r'%s' % regex[1], search_string):
+            criteria[regex[0]] = process(search_string, regex[2])
             break
     if not criteria:
         clean_search_string = search_string.strip()
