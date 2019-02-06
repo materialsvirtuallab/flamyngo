@@ -1,5 +1,8 @@
 # Change log
 
+## v0.9.11
+* Add number of documents in collection to dropdown.
+
 ## v0.9.10
 * Autocomplete for search (@migueldiascosta).
 
