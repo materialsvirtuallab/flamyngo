@@ -29,6 +29,8 @@ A sample commented configuration yaml file is given below. You can start from
 the one below and customize it to suit your needs.
 
 ```yaml
+# Provide an optional title for your app.
+title: "My Flamyngo App"
 # Provide some help text (html format) for the query.
 help: "Supported queries: last name (string)"
 

@@ -1,5 +1,9 @@
 # Change log
 
+## v0.10.4
+* Add ability to provide an app title.
+* Add Flamyngo footer.
+
 ## v0.10.3
 * Support for default sorting.
 

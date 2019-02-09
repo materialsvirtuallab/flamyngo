@@ -19,6 +19,7 @@ module_path = os.path.dirname(os.path.abspath(__file__))
 
 
 SETTINGS = loadfn(os.environ["FLAMYNGO"])
+APP_TITLE = SETTINGS.get("title", "Flamyngo")
 CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"],
                    connect=False)
 DB = CONN[SETTINGS["db"]["database"]]
@@ -109,8 +110,8 @@ def process_search_string(search_string, settings):
 @app.route('/', methods=['GET'])
 @requires_auth
 def index():
-    return make_response(render_template('index.html', collections=CNAMES,
-                                         helptext=HELPTXT))
+    return make_response(render_template(
+        'index.html', collections=CNAMES, helptext=HELPTXT, app_title=APP_TITLE))
 
 
 @app.route('/autocomplete', methods=['GET'])
@@ -204,7 +205,7 @@ def query():
         results=results, fields=fields, search_string=search_string,
         mapped_names=mapped_names, unique_key=settings["unique_key"],
         active_collection=cname, collections=CNAMES,
-        error_message=error_message, helptext=HELPTXT)
+        error_message=error_message, helptext=HELPTXT, app_title=APP_TITLE)
     )
 
 
@@ -225,7 +226,7 @@ def plot():
         search_string=search_string, plot_type=plot_type,
         xaxis=xaxis, yaxis=yaxis,
         active_collection=cname,
-        collections=CNAMES,
+        collections=CNAMES, app_title=APP_TITLE,
         plot=True)
     )
 
@@ -269,7 +270,8 @@ def get_ids(collection_name):
 @requires_auth
 def get_doc(collection_name, uid):
     return make_response(render_template(
-        'doc.html', collection_name=collection_name, doc_id=uid)
+        'doc.html', collection_name=collection_name, doc_id=uid,
+        app_title=APP_TITLE)
     )
 
 

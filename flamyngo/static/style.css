@@ -1,4 +1,6 @@
 body {
+    display: flex;
+    flex-direction: column;
     font-family: "Arial","sans-serif";
     font-size: 1.1em;
 }
@@ -102,4 +104,11 @@ h1, h2 {
     margin-left: auto;
     padding-top: 40px;
     font-size: 1.1em;
+}
+
+#footer {
+  color: #888888;
+  font-size: 0.8em;
+  padding: 20px;
+  text-align: center;
 }
