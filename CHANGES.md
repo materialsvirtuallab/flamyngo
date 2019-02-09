@@ -1,5 +1,8 @@
 # Change log
 
+## v0.10.1
+* Support for default sorting.
+
 ## v0.9.12
 * Fix bad introduction of regex.
 

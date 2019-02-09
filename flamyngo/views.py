@@ -88,7 +88,6 @@ def process_search_string_regex(search_string, settings):
     return criteria
 
 
-
 def process_search_string(search_string, settings):
     criteria = {}
     for regex in settings["query"]:
@@ -192,8 +191,20 @@ def query():
     except Exception as ex:
         error_message = str(ex)
 
+    try:
+        sort_key, sort_mode = settings["sort"]
+        print(sort_key)
+        print(sort_mode)
+        sort_index = fields.index(sort_key)
+    except:
+        sort_index = 0
+        sort_mode = "asc"
+
+    print(settings["sort"])
+
     return make_response(render_template(
         'index.html', collection_name=cname,
+        sort_index=sort_index, sort_mode=sort_mode,
         results=results, fields=fields, search_string=search_string,
         mapped_names=mapped_names, unique_key=settings["unique_key"],
         active_collection=cname, collections=CNAMES,

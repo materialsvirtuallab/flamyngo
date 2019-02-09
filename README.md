@@ -69,6 +69,9 @@ collections:
       - [first_name, str]
       - [last_name, str]
       - [phone_number, str]
+        
+    # Initial sorting for summary. Use asc for ascending and desc for descending.
+    sort: [last_name, asc]
 
     # Aliases for various fields. These are used to display short names in the summary
     # table. You can also directly perform queries using the short names instead of
