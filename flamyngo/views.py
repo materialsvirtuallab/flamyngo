@@ -204,9 +204,11 @@ def query():
 @app.route('/plot', methods=['GET'])
 @requires_auth
 def plot():
-    cname = request.args.get("collection").split(":")[0]
+    cname = request.args.get("collection")
     if not cname:
         return make_response(render_template('plot.html', collections=CNAMES))
+    else:
+        cname = cname.split(":")[0]
     plot_type = request.args.get("plot_type") or "scatter"
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
