@@ -193,14 +193,10 @@ def query():
 
     try:
         sort_key, sort_mode = settings["sort"]
-        print(sort_key)
-        print(sort_mode)
         sort_index = fields.index(sort_key)
     except:
         sort_index = 0
         sort_mode = "asc"
-
-    print(settings["sort"])
 
     return make_response(render_template(
         'index.html', collection_name=cname,
