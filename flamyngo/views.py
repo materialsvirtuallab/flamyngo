@@ -204,7 +204,7 @@ def query():
         results=results, fields=fields, search_string=search_string,
         mapped_names=mapped_names, unique_key=settings["unique_key"],
         active_collection=cname, collections=CNAMES,
-        error_message=error_message)
+        error_message=error_message, helptext=HELPTXT)
     )
 
 
