@@ -1,6 +1,6 @@
 # Change log
 
-## v0.10.2
+## v0.10.3
 * Support for default sorting.
 
 ## v0.9.12
