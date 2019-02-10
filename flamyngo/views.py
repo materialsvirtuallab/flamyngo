@@ -15,18 +15,20 @@ from flamyngo.app import app
 from functools import wraps
 from flask import request, Response
 
-module_path = os.path.dirname(os.path.abspath(__file__))
-
 
 SETTINGS = loadfn(os.environ["FLAMYNGO"])
 APP_TITLE = SETTINGS.get("title", "Flamyngo")
+HELPTXT = SETTINGS.get("help", "")
+TEMPLATE_FOLDER = SETTINGS.get("template_folder", "templates")
+
+
 CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"],
                    connect=False)
 DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
-HELPTXT = SETTINGS.get("help", "")
-CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count()) for d in SETTINGS["collections"]]
+CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count())
+          for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
 AUTH_PASSWD = SETTINGS.get("AUTH_PASSWD", None)

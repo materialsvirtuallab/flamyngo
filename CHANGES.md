@@ -1,5 +1,8 @@
 # Change log
 
+## v0.10.5
+* Support user-supplied template folder.
+
 ## v0.10.4
 * Add ability to provide an app title.
 * Add Flamyngo footer.

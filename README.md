@@ -31,8 +31,19 @@ the one below and customize it to suit your needs.
 ```yaml
 # Provide an optional title for your app.
 title: "My Flamyngo App"
-# Provide some help text (html format) for the query.
+
+# Provide some optional help text (html format) for the query.
 help: "Supported queries: last name (string)"
+
+# Uncomment the parameter below to provide an optional template folder, which
+# will be passed into the Flamyngo app. Path to the template folder should be
+# specified relative to localtion where flm is run. If not provided, the
+# default provided in the flamyngo.templates will be used. It is highly
+# recommended that you start from the default provided and make only stylistic
+# changes. It is imperative you do not change the variable names in the Jinja
+# templates or Flamyngo will not work.
+
+# template_folder: my_templates
 
 # MongoDB settings
 db:
