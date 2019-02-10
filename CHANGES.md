@@ -1,5 +1,8 @@
 # Change log
 
+## v0.10.6
+* Support Python format strings as processing functions.
+
 ## v0.10.5
 * Support user-supplied template folder.
 

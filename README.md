@@ -75,22 +75,25 @@ collections:
 
     # A default list of projection key, processing function to display as a table. 
     # Again, processing function can be any callable, and you can define your own.
-    # For example, you can take in a float and render it as a fixed decimal.
-    # The alias is optional. If provided, the alias will be used as the column name.
+    # You can also supply any Python formatting string (starts with %) as the processing
+    # function. For example, "%.1f" would format that quantity as a float with one
+    # decimal.
     summary:
       - [_id, str]
       - [first_name, str]
       - [last_name, str]
       - [phone_number, str]
+      - [age, "%d"]
         
-    # Initial sorting for summary. Use asc for ascending and desc for descending.
-    sort: [last_name, asc]
-
     # Aliases for various fields. These are used to display short names in the summary
     # table. You can also directly perform queries using the short names instead of
     # using the long names.
     aliases:
       phone_number: number
+
+    # Initial sorting for summary. Use asc for ascending and desc for descending.
+    # Note that the aliased name (if any) should be used for sorting.
+    sort: [last_name, asc]
 
     # The following defines unique identifiers for each doc. This allows each
     # specific doc to be queried and displayed using this key. If this key is

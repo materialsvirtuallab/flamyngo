@@ -299,13 +299,16 @@ def get_doc_json(collection_name, uid):
 
 def process(val, vtype):
     if vtype:
-        toks = vtype.rsplit(".", 1)
-        if len(toks) == 1:
-            func = globals()["__builtins__"][toks[0]]
+        if vtype.startswith("%"):
+            return vtype % val
         else:
-            mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
-            func = getattr(mod, toks[1])
-        return func(val)
+            toks = vtype.rsplit(".", 1)
+            if len(toks) == 1:
+                func = globals()["__builtins__"][toks[0]]
+            else:
+                mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
+                func = getattr(mod, toks[1])
+            return func(val)
     else:
         try:
             if float(val) == int(val):
