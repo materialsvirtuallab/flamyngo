@@ -1,4 +1,4 @@
 Flask==1.0.2
-ruamel.yaml==0.15.91
+ruamel.yaml==0.15.94
 monty==2.0.4
-pymongo==3.7.2
+pymongo==3.8.0
