@@ -162,7 +162,7 @@ def query():
     cname = request.args.get("collection").split(":")[0]
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
-    projection = [t[0] for t in settings["summary"]]
+    projection = [t[0].split(".")[0] for t in settings["summary"]]
     fields = None
     results = None
     mapped_names = None
@@ -329,7 +329,7 @@ def _get_val(k, d, processing_func):
         for t in toks[1:]:
             try:
                 val = val[t]
-            except KeyError:
+            except TypeError as ex:
                 # Handle integer indices
                 val = val[int(t)]
         val = process(val, processing_func)
