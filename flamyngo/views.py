@@ -21,14 +21,14 @@ APP_TITLE = SETTINGS.get("title", "Flamyngo")
 HELPTXT = SETTINGS.get("help", "")
 TEMPLATE_FOLDER = SETTINGS.get("template_folder", "templates")
 
-
-CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"],
-                   connect=False)
+if "connection_string" in SETTINGS["db"]:
+    CONN = MongoClient(SETTINGS["db"]["connection_string"])
+else:
+    CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"], connect=False)
 DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
-CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count())
-          for d in SETTINGS["collections"]]
+CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count()) for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
 AUTH_PASSWD = SETTINGS.get("AUTH_PASSWD", None)
@@ -48,9 +48,11 @@ def check_auth(username, password):
 def authenticate():
     """Sends a 401 response that enables basic auth"""
     return Response(
-        'Could not verify your access level for that URL. You have to login '
-        'with proper credentials', 401,
-        {'WWW-Authenticate': 'Basic realm="Login Required"'})
+        "Could not verify your access level for that URL. You have to login "
+        "with proper credentials",
+        401,
+        {"WWW-Authenticate": 'Basic realm="Login Required"'},
+    )
 
 
 def requires_auth(f):
@@ -60,10 +62,12 @@ def requires_auth(f):
         api_key = request.headers.get("API_KEY") or request.args.get("API_KEY")
         if (API_KEY is not None) and api_key == API_KEY:
             return f(*args, **kwargs)
-        if (AUTH_USER is not None) and (not auth or not check_auth(
-                auth.username, auth.password)):
+        if (AUTH_USER is not None) and (
+            not auth or not check_auth(auth.username, auth.password)
+        ):
             return authenticate()
         return f(*args, **kwargs)
+
     return decorated
 
 
@@ -76,53 +80,52 @@ def get_mapped_name(settings, name):
 def process_search_string_regex(search_string, settings):
     criteria = {}
     for regex in settings["query"]:
-        if re.match(r'%s' % regex[1], search_string):
-            criteria[regex[0]] = {'$regex' : str(process(search_string, regex[2]))}
+        if re.match(r"%s" % regex[1], search_string):
+            criteria[regex[0]] = {"$regex": str(process(search_string, regex[2]))}
             break
     if not criteria:
         clean_search_string = search_string.strip()
-        if clean_search_string[0] != "{" or \
-                        clean_search_string[-1] != "}":
+        if clean_search_string[0] != "{" or clean_search_string[-1] != "}":
             clean_search_string = "{" + clean_search_string + "}"
         criteria = json.loads(clean_search_string)
 
-        criteria = {get_mapped_name(settings, k): v
-                    for k, v in criteria.items()}
+        criteria = {get_mapped_name(settings, k): v for k, v in criteria.items()}
     return criteria
 
 
 def process_search_string(search_string, settings):
     criteria = {}
     for regex in settings["query"]:
-        if re.match(r'%s' % regex[1], search_string):
+        if re.match(r"%s" % regex[1], search_string):
             criteria[regex[0]] = process(search_string, regex[2])
             break
     if not criteria:
         clean_search_string = search_string.strip()
-        if clean_search_string[0] != "{" or \
-                        clean_search_string[-1] != "}":
+        if clean_search_string[0] != "{" or clean_search_string[-1] != "}":
             clean_search_string = "{" + clean_search_string + "}"
         criteria = json.loads(clean_search_string)
 
-        criteria = {get_mapped_name(settings, k): v
-                    for k, v in criteria.items()}
+        criteria = {get_mapped_name(settings, k): v for k, v in criteria.items()}
     return criteria
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 @requires_auth
 def index():
-    return make_response(render_template(
-        'index.html', collections=CNAMES, helptext=HELPTXT, app_title=APP_TITLE))
+    return make_response(
+        render_template(
+            "index.html", collections=CNAMES, helptext=HELPTXT, app_title=APP_TITLE
+        )
+    )
 
 
-@app.route('/autocomplete', methods=['GET'])
+@app.route("/autocomplete", methods=["GET"])
 @requires_auth
 def autocomplete():
-    terms=[]
-    criteria={}
+    terms = []
+    criteria = {}
 
-    search_string = request.args.get('term')
+    search_string = request.args.get("term")
     cname = request.args.get("collection").split(":")[0]
 
     collection = DB[cname]
@@ -130,18 +133,18 @@ def autocomplete():
 
     # if search looks like a special query, autocomplete values
     for regex in settings["query"]:
-        if re.match(r'%s' % regex[1], search_string):
-            criteria[regex[0]] = {'$regex' : str(process(search_string, regex[2]))}
+        if re.match(r"%s" % regex[1], search_string):
+            criteria[regex[0]] = {"$regex": str(process(search_string, regex[2]))}
             projection = {regex[0]: 1}
 
             results = collection.find(criteria, projection)
-            
+
             if results:
-                terms = [ term[regex[0]] for term in results ]
+                terms = [term[regex[0]] for term in results]
 
     # if search looks like a query dict, autocomplete keys
     if not criteria and search_string[0:2] == '{"':
-        if search_string.count('"')%2 != 0:
+        if search_string.count('"') % 2 != 0:
             splitted = search_string.split('"')
             previous = splitted[:-1]
             last = splitted[-1]
@@ -151,12 +154,12 @@ def autocomplete():
             results = _search_dict(settings["autocomplete_keys"], last)
 
             if results:
-                terms = [ '"'.join(previous + [term]) + '":' for term in results ]
+                terms = ['"'.join(previous + [term]) + '":' for term in results]
 
     return jsonify(matching_results=jsanitize(list(set(terms))))
 
 
-@app.route('/query', methods=['GET'])
+@app.route("/query", methods=["GET"])
 @requires_auth
 def query():
     cname = request.args.get("collection").split(":")[0]
@@ -201,39 +204,55 @@ def query():
         sort_index = 0
         sort_mode = "asc"
 
-    return make_response(render_template(
-        'index.html', collection_name=cname,
-        sort_index=sort_index, sort_mode=sort_mode,
-        results=results, fields=fields, search_string=search_string,
-        mapped_names=mapped_names, unique_key=settings["unique_key"],
-        active_collection=cname, collections=CNAMES,
-        error_message=error_message, helptext=HELPTXT, app_title=APP_TITLE)
+    return make_response(
+        render_template(
+            "index.html",
+            collection_name=cname,
+            sort_index=sort_index,
+            sort_mode=sort_mode,
+            results=results,
+            fields=fields,
+            search_string=search_string,
+            mapped_names=mapped_names,
+            unique_key=settings["unique_key"],
+            active_collection=cname,
+            collections=CNAMES,
+            error_message=error_message,
+            helptext=HELPTXT,
+            app_title=APP_TITLE,
+        )
     )
 
 
-@app.route('/plot', methods=['GET'])
+@app.route("/plot", methods=["GET"])
 @requires_auth
 def plot():
     cname = request.args.get("collection")
     if not cname:
-        return make_response(render_template('plot.html', collections=CNAMES))
+        return make_response(render_template("plot.html", collections=CNAMES))
     else:
         cname = cname.split(":")[0]
     plot_type = request.args.get("plot_type") or "scatter"
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
     yaxis = request.args.get("yaxis")
-    return make_response(render_template(
-        'plot.html', collection=cname,
-        search_string=search_string, plot_type=plot_type,
-        xaxis=xaxis, yaxis=yaxis,
-        active_collection=cname,
-        collections=CNAMES, app_title=APP_TITLE,
-        plot=True)
+    return make_response(
+        render_template(
+            "plot.html",
+            collection=cname,
+            search_string=search_string,
+            plot_type=plot_type,
+            xaxis=xaxis,
+            yaxis=yaxis,
+            active_collection=cname,
+            collections=CNAMES,
+            app_title=APP_TITLE,
+            plot=True,
+        )
     )
 
 
-@app.route('/data', methods=['GET'])
+@app.route("/data", methods=["GET"])
 @requires_auth
 def get_data():
     cname = request.args.get("collection").split(":")[0]
@@ -260,7 +279,7 @@ def get_data():
     return jsonify(jsanitize(data))
 
 
-@app.route('/<string:collection_name>/unique_ids')
+@app.route("/<string:collection_name>/unique_ids")
 @requires_auth
 def get_ids(collection_name):
     settings = CSETTINGS[collection_name]
@@ -268,31 +287,30 @@ def get_ids(collection_name):
     return jsonify(jsanitize(doc))
 
 
-@app.route('/<string:collection_name>/doc/<string:uid>')
+@app.route("/<string:collection_name>/doc/<string:uid>")
 @requires_auth
 def get_doc(collection_name, uid):
-    return make_response(render_template(
-        'doc.html', collection_name=collection_name, doc_id=uid,
-        app_title=APP_TITLE)
+    return make_response(
+        render_template(
+            "doc.html", collection_name=collection_name, doc_id=uid, app_title=APP_TITLE
+        )
     )
 
 
-@app.route('/<string:collection_name>/doc/<string:uid>/<string:field>')
+@app.route("/<string:collection_name>/doc/<string:uid>/<string:field>")
 @requires_auth
 def get_doc_field(collection_name, uid, field):
     settings = CSETTINGS[collection_name]
-    criteria = {
-        settings["unique_key"]: process(uid, settings["unique_key_type"])}
+    criteria = {settings["unique_key"]: process(uid, settings["unique_key_type"])}
     doc = DB[collection_name].find_one(criteria, projection=[field])
-    return Response(str(doc[field]), mimetype='text/plain')
+    return Response(str(doc[field]), mimetype="text/plain")
 
 
-@app.route('/<string:collection_name>/doc/<string:uid>/json')
+@app.route("/<string:collection_name>/doc/<string:uid>/json")
 @requires_auth
 def get_doc_json(collection_name, uid):
     settings = CSETTINGS[collection_name]
-    criteria = {
-        settings["unique_key"]: process(uid, settings["unique_key_type"])}
+    criteria = {settings["unique_key"]: process(uid, settings["unique_key_type"])}
     doc = DB[collection_name].find_one(criteria)
     return jsonify(jsanitize(doc))
 
@@ -343,7 +361,7 @@ def _search_dict(dictionary, substr):
     result = []
     for key in dictionary:
         if substr.lower() in key.lower():
-            result.append(key)   
+            result.append(key)
     return result
 
 
