@@ -225,7 +225,7 @@ def query():
     try:
         sort_key, sort_mode = settings["sort"]
         sort_index = fields.index(sort_key)
-    except:
+    except Exception:
         sort_index = 0
         sort_mode = "asc"
 
@@ -378,10 +378,10 @@ def process(val, vtype):
         if float(val) == int(val):
             return int(val)
         return float(val)
-    except:
+    except Exception:
         try:
             return float(val)
-        except:
+        except Exception:
             # Y is string.
             return val
 
@@ -393,11 +393,11 @@ def _get_val(k, d, processing_func):
         for t in toks[1:]:
             try:
                 val = val[t]
-            except TypeError as ex:
+            except TypeError:
                 # Handle integer indices
                 val = val[int(t)]
         val = process(val, processing_func)
-    except Exception as ex:
+    except Exception:
         # Return the base value if we cannot descend into the data.
         val = None
     return val
