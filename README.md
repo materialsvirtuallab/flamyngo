@@ -54,7 +54,7 @@ db:
   database: mydb
 # Alternatively, MongoDB settings can just be provided as a connection string.
 # dnspython must be installed if you are using the connection string method.
-#  connection_string: "mongodb+srv://user:password@mydb.mongodb.net/mydb?retryWrites=true
+#  connection_string: "mongodb+srv://user:password@mydb.mongodb.net/"
 
 
 # List of collection settings. Note that more than one collection is supported,
