@@ -2,10 +2,8 @@
 # Copyright (c) Materials Virtual Lab.
 # Distributed under the terms of the BSD License.
 
-from __future__ import division, print_function, unicode_literals
-
 """
-#TODO: Replace with proper module doc.
+Main flask app for Flamyngo
 """
 
 import argparse
