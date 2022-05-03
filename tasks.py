@@ -67,8 +67,6 @@ def release_github(ctx):
 @task
 def release(ctx, notest=False):
     setver(ctx)
-    if not notest:
-        ctx.run("nosetests")
     publish(ctx)
     merge_stable(ctx)
     # update_doc(ctx)
