@@ -1,0 +1,13 @@
+sphinx
+doc2dash
+sphinx_rtd_theme
+pytest
+pytest-cov
+coverage
+coveralls
+mypy
+pydocstyle
+flake8
+pylint
+black
+pre-commit
