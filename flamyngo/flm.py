@@ -2,14 +2,14 @@
 # Copyright (c) Materials Virtual Lab.
 # Distributed under the terms of the BSD License.
 
-from __future__ import division, unicode_literals, print_function
+from __future__ import division, print_function, unicode_literals
 
 """
 #TODO: Replace with proper module doc.
 """
 
-import os
 import argparse
+import os
 import time
 import webbrowser
 

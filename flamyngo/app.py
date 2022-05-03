@@ -1,6 +1,7 @@
 import os
-from monty.serialization import loadfn
+
 from flask import Flask
+from monty.serialization import loadfn
 
 SETTINGS = loadfn(os.environ["FLAMYNGO"])
 if SETTINGS.get("template_folder"):

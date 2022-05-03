@@ -1,20 +1,15 @@
 import json
-import re
 import os
+import re
+from functools import wraps
 
+from flask import Response, make_response, render_template, request
+from flask.json import jsonify
+from monty.json import jsanitize
+from monty.serialization import loadfn
 from pymongo import MongoClient
 
-from monty.serialization import loadfn
-from monty.json import jsanitize
-
-from flask import render_template, make_response
-from flask.json import jsonify
-
 from flamyngo.app import app
-
-from functools import wraps
-from flask import request, Response
-
 
 SETTINGS = loadfn(os.environ["FLAMYNGO"])
 APP_TITLE = SETTINGS.get("title", "Flamyngo")
@@ -28,7 +23,10 @@ else:
 DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
-CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count_documents({})) for d in SETTINGS["collections"]]
+CNAMES = [
+    "%s:%d" % (d["name"], DB[d["name"]].count_documents({}))
+    for d in SETTINGS["collections"]
+]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
 AUTH_PASSWD = SETTINGS.get("AUTH_PASSWD", None)
