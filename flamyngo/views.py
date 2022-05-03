@@ -1,3 +1,7 @@
+"""
+Main implementation of Flamyngo webapp and all processing.
+"""
+
 import json
 import os
 import re
@@ -54,6 +58,9 @@ def authenticate():
 
 
 def requires_auth(f):
+    """
+    Check for authentication.
+    """
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
@@ -70,12 +77,17 @@ def requires_auth(f):
 
 
 def get_mapped_name(settings, name):
-    # The following allows used of mapped names in search criteria.
+    """
+    The following allows used of mapped names in search criteria.
+    """
     name_mappings = {v: k for k, v in settings.get("aliases", {}).items()}
     return name_mappings.get(name, name)
 
 
 def process_search_string_regex(search_string, settings):
+    """
+    Process search string with regex
+    """
     criteria = {}
     for regex in settings["query"]:
         if re.match(r"%s" % regex[1], search_string):
@@ -92,6 +104,9 @@ def process_search_string_regex(search_string, settings):
 
 
 def process_search_string(search_string, settings):
+    """
+    Process search string with query.
+    """
     criteria = {}
     for regex in settings["query"]:
         if re.match(r"%s" % regex[1], search_string):
@@ -110,6 +125,9 @@ def process_search_string(search_string, settings):
 @app.route("/", methods=["GET"])
 @requires_auth
 def index():
+    """
+    Index page.
+    """
     return make_response(
         render_template(
             "index.html", collections=CNAMES, helptext=HELPTXT, app_title=APP_TITLE
@@ -120,6 +138,9 @@ def index():
 @app.route("/autocomplete", methods=["GET"])
 @requires_auth
 def autocomplete():
+    """
+    Autocomplete if allowed.
+    """
     if SETTINGS.get("autocomplete"):
         terms = []
         criteria = {}
@@ -162,6 +183,9 @@ def autocomplete():
 @app.route("/query", methods=["GET"])
 @requires_auth
 def query():
+    """
+    Process query search.
+    """
     cname = request.args.get("collection").split(":")[0]
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
@@ -227,11 +251,14 @@ def query():
 @app.route("/plot", methods=["GET"])
 @requires_auth
 def plot():
+    """
+    Plot data.
+    """
     cname = request.args.get("collection")
     if not cname:
         return make_response(render_template("plot.html", collections=CNAMES))
-    else:
-        cname = cname.split(":")[0]
+
+    cname = cname.split(":")[0]
     plot_type = request.args.get("plot_type") or "scatter"
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
@@ -255,6 +282,9 @@ def plot():
 @app.route("/data", methods=["GET"])
 @requires_auth
 def get_data():
+    """
+    Return data json.
+    """
     cname = request.args.get("collection").split(":")[0]
     settings = CSETTINGS[cname]
     search_string = request.args.get("search_string")
@@ -282,6 +312,9 @@ def get_data():
 @app.route("/<string:collection_name>/unique_ids")
 @requires_auth
 def get_ids(collection_name):
+    """
+    Returns unique ids
+    """
     settings = CSETTINGS[collection_name]
     doc = DB[collection_name].distinct(settings["unique_key"])
     return jsonify(jsanitize(doc))
@@ -290,6 +323,9 @@ def get_ids(collection_name):
 @app.route("/<string:collection_name>/doc/<string:uid>")
 @requires_auth
 def get_doc(collection_name, uid):
+    """
+    Returns document.
+    """
     return make_response(
         render_template(
             "doc.html", collection_name=collection_name, doc_id=uid, app_title=APP_TITLE
@@ -300,6 +336,9 @@ def get_doc(collection_name, uid):
 @app.route("/<string:collection_name>/doc/<string:uid>/<string:field>")
 @requires_auth
 def get_doc_field(collection_name, uid, field):
+    """
+    Get doc field.
+    """
     settings = CSETTINGS[collection_name]
     criteria = {settings["unique_key"]: process(uid, settings["unique_key_type"])}
     doc = DB[collection_name].find_one(criteria, projection=[field])
@@ -309,6 +348,9 @@ def get_doc_field(collection_name, uid, field):
 @app.route("/<string:collection_name>/doc/<string:uid>/json")
 @requires_auth
 def get_doc_json(collection_name, uid):
+    """
+    Get doc json.
+    """
     settings = CSETTINGS[collection_name]
     criteria = {settings["unique_key"]: process(uid, settings["unique_key_type"])}
     doc = DB[collection_name].find_one(criteria)
@@ -316,28 +358,31 @@ def get_doc_json(collection_name, uid):
 
 
 def process(val, vtype):
+    """
+    Value processing and formatting.
+    """
     if vtype:
         if vtype.startswith("%"):
             return vtype % val
+
+        toks = vtype.rsplit(".", 1)
+        if len(toks) == 1:
+            func = globals()["__builtins__"][toks[0]]
         else:
-            toks = vtype.rsplit(".", 1)
-            if len(toks) == 1:
-                func = globals()["__builtins__"][toks[0]]
-            else:
-                mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
-                func = getattr(mod, toks[1])
-            return func(val)
-    else:
+            mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
+            func = getattr(mod, toks[1])
+        return func(val)
+
+    try:
+        if float(val) == int(val):
+            return int(val)
+        return float(val)
+    except:
         try:
-            if float(val) == int(val):
-                return int(val)
             return float(val)
         except:
-            try:
-                return float(val)
-            except:
-                # Y is string.
-                return val
+            # Y is string.
+            return val
 
 
 def _get_val(k, d, processing_func):

@@ -13,6 +13,9 @@ import webbrowser
 
 
 def run_server(args):
+    """
+    Run server
+    """
     os.environ["FLAMYNGO"] = args.config
     from flamyngo.app import app
 
@@ -32,7 +35,9 @@ def run_server(args):
 
 
 def main():
-
+    """
+    Process args
+    """
     parser = argparse.ArgumentParser(
         description="""flamyngo is a basic Flask frontend for querying
         MongoDB collections.""",
