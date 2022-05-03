@@ -7,6 +7,9 @@ import os
 import re
 from functools import wraps
 
+import pandas as pd
+import plotly
+import plotly.express as px
 from flask import Response, make_response, render_template, request
 from flask.json import jsonify
 from monty.json import jsanitize
@@ -264,6 +267,32 @@ def plot():
     search_string = request.args.get("search_string")
     xaxis = request.args.get("xaxis")
     yaxis = request.args.get("yaxis")
+
+    settings = CSETTINGS[cname]
+
+    xaxis_mapped = get_mapped_name(settings, xaxis)
+    yaxis_mapped = get_mapped_name(settings, yaxis)
+
+    projection = [xaxis_mapped, yaxis_mapped]
+
+    if search_string.strip() != "":
+        criteria = process_search_string(search_string, settings)
+        data = []
+        for r in DB[cname].find(criteria, projection=projection):
+            x = _get_val(xaxis_mapped, r, None)
+            y = _get_val(yaxis_mapped, r, None)
+            if x and y:
+                data.append([x, y])
+    else:
+        data = []
+
+    df = pd.DataFrame(data, columns=[xaxis, yaxis])
+    if plot_type == "scatter":
+        fig = px.scatter(df, x=xaxis, y=yaxis)
+    else:
+        fig = px.bar(df, x=xaxis, y=yaxis)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
     return make_response(
         render_template(
             "plot.html",
@@ -275,6 +304,7 @@ def plot():
             active_collection=cname,
             collections=CNAMES,
             app_title=APP_TITLE,
+            graphJSON=graphJSON,
             plot=True,
         )
     )
