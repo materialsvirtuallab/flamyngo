@@ -105,6 +105,13 @@ collections:
     # unique document.
     unique_key: _id
     unique_key_type: bson.objectid.ObjectId
+    
+    # The following defines keys to exclude from the doc view.
+    # This is sometimes useful (or necessary) to reduce the size of the
+    # individual documents being viewed (for very large documents).
+    # This only affects the doc view.
+    doc_exclude:
+      - key_to_exclude
 
 # Basic auth can be set up by specifying user and password below. If these are not
 # set, then no authentication. Note that this is not the most secure. It is merely

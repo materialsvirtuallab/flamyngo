@@ -353,8 +353,10 @@ def get_doc_json(collection_name, uid):
     Get doc json.
     """
     settings = CSETTINGS[collection_name]
+    projection = {k: False for k in settings.get("doc_exclude", [])}
     criteria = {settings["unique_key"]: process(uid, settings["unique_key_type"])}
-    doc = DB[collection_name].find_one(criteria)
+    doc = DB[collection_name].find_one(criteria, projection=projection)
+
     return jsonify(jsanitize(doc))
 
 
