@@ -28,7 +28,7 @@ else:
 DB = CONN[SETTINGS["db"]["database"]]
 if "username" in SETTINGS["db"]:
     DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
-CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count()) for d in SETTINGS["collections"]]
+CNAMES = ["%s:%d" % (d["name"], DB[d["name"]].count_documents({})) for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
 AUTH_PASSWD = SETTINGS.get("AUTH_PASSWD", None)
