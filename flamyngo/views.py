@@ -7,6 +7,7 @@ import os
 import re
 from functools import wraps
 
+from ruamel.yaml import YAML
 import pandas as pd
 import plotly
 import plotly.express as px
@@ -357,6 +358,27 @@ def get_doc_json(collection_name, uid):
     doc = DB[collection_name].find_one(criteria, projection=projection)
 
     return jsonify(jsanitize(doc))
+
+
+@app.route("/<string:collection_name>/doc/<string:uid>/yaml")
+@requires_auth
+def get_doc_yaml(collection_name, uid):
+    """
+    Get doc yaml.
+    """
+    settings = CSETTINGS[collection_name]
+    projection = {k: False for k in settings.get("doc_exclude", [])}
+    criteria = {settings["unique_key"]: process(uid, settings["unique_key_type"])}
+    doc = DB[collection_name].find_one(criteria, projection=projection)
+    yml = YAML()
+    yml.default_flow_style = False
+    from io import StringIO
+
+    s = StringIO()
+    yml.dump(jsanitize(doc), s)
+    response = make_response(s.getvalue(), 200)
+    response.mimetype = "text/plain"
+    return response
 
 
 def process(val, vtype):
