@@ -5,7 +5,6 @@
 * Support excluding keys from docs
 * Various housekeeping.
 
-
 ## v0.10.6
 * Support Python format strings as processing functions.
 

@@ -1,18 +1,24 @@
-{% extends "layout.html" %} {% block title %}{{app_title}}{% endblock %} {% block top_javascript %}
+{% extends "layout.html" %} {% block title %}{{ app_title }}{% endblock %}
 
-<script type="text/javascript">
-    $(function() {
-        $('input[type=submit]').button();
-        $(".select").selectmenu();
-    });
-</script>
-{% endblock %} {% block css %}
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='index.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='plot.css') }}"> {% endblock %} {% block content %}
-<h1>Plot</h1>
+{% block top_javascript %}
+    <script type="text/javascript">
+        $(function () {
+            $('input[type=submit]').button();
+            $(".select").selectmenu();
+        });
+    </script>
+{% endblock %}
 
-<form action="/plot" method="get" id="form-plot">
-    <p id="query">
+{% block css %}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='index.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='plot.css') }}">
+{% endblock %}
+
+{% block content %}
+    <h1>Plot</h1>
+
+    <form action="/plot" method="get" id="form-plot">
+        <p id="query">
         <table>
             <tr>
                 <td>
@@ -21,9 +27,9 @@
                 <td>
                     <select name="collection" class="select" id="select-collection">
                         {% for c in collections %} {% if c == active_collection %}
-                        <option value="{{c}}" selected="selected">{{c}}</option>
+                            <option value="{{ c }}" selected="selected">{{ c }}</option>
                         {% else %}
-                        <option value="{{c}}">{{c}}</option>
+                            <option value="{{ c }}">{{ c }}</option>
                         {% endif %} {% endfor %}
                     </select>
                 </td>
@@ -35,11 +41,11 @@
                 <td>
                     <select name="plot_type" class="select" id="select-plot_type">
                         {% if plot_type == "bar" %}
-                        <option value="scatter">scatter</option>
-                        <option value="bar" selected="selected">bar</option>
+                            <option value="scatter">scatter</option>
+                            <option value="bar" selected="selected">bar</option>
                         {% else %}
-                        <option value="scatter" selected="selected">scatter</option>
-                        <option value="bar">bar</option>
+                            <option value="scatter" selected="selected">scatter</option>
+                            <option value="bar">bar</option>
                         {% endif %}
                     </select>
                 </td>
@@ -49,7 +55,8 @@
                     <label>Filter</label>
                 </td>
                 <td>
-                    <input type="text" name="search_string" id="input-search" placeholder="Type query..." size="30" value="{{search_string}}">
+                    <input type="text" name="search_string" id="input-search" placeholder="Type query..." size="30"
+                           value="{{ search_string }}">
                 </td>
             </tr>
             <tr>
@@ -57,7 +64,8 @@
                     <label>X-axis</label>
                 </td>
                 <td>
-                    <input type="text" name="xaxis" id="input-xaxis" placeholder="E.g., year" size="30" value="{{xaxis}}">
+                    <input type="text" name="xaxis" id="input-xaxis" placeholder="E.g., year" size="30"
+                           value="{{ xaxis }}">
                 </td>
             </tr>
             <tr>
@@ -65,7 +73,8 @@
                     <label>Y-axis</label>
                 </td>
                 <td>
-                    <input type="text" name="yaxis" id="input-yaxis" placeholder="E.g., earnings" size="30" value="{{yaxis}}">
+                    <input type="text" name="yaxis" id="input-yaxis" placeholder="E.g., earnings" size="30"
+                           value="{{ yaxis }}">
                 </td>
             </tr>
             <tr>
@@ -80,20 +89,21 @@
             </tr>
 
         </table>
-    </p>
-    <p>
-        <input id="plot-button" type="submit" name="submit" value="Plot">
-    </p>
-</form>
+        </p>
+        <p>
+            <input id="plot-button" type="submit" name="submit" value="Plot">
+        </p>
+    </form>
 
     <div id='plot-div' class='chart'></div>
-<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-<script type='text/javascript'>
-  var graphs = {{graphJSON | safe}};
-  Plotly.plot('plot-div',graphs,{});
-</script>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script type='text/javascript'>
+        var graphs = {{graphJSON | safe}};
+        Plotly.plot('plot-div', graphs, {});
+    </script>
 
-{% if error_message %}
-<h2>{{ error_message }}</h2> {% endif %}
+    {% if error_message %}
+        <h2>{{ error_message }}</h2>
+    {% endif %}
 
 {% endblock %}

@@ -304,40 +304,9 @@ def plot():
             active_collection=cname,
             collections=CNAMES,
             app_title=APP_TITLE,
-            graphJSON=graphJSON,
-            plot=True,
+            graphJSON=graphJSON
         )
     )
-
-
-@app.route("/data", methods=["GET"])
-@requires_auth
-def get_data():
-    """
-    Return data json.
-    """
-    cname = request.args.get("collection").split(":")[0]
-    settings = CSETTINGS[cname]
-    search_string = request.args.get("search_string")
-    xaxis = request.args.get("xaxis")
-    yaxis = request.args.get("yaxis")
-
-    xaxis = get_mapped_name(settings, xaxis)
-    yaxis = get_mapped_name(settings, yaxis)
-
-    projection = [xaxis, yaxis]
-
-    if search_string.strip() != "":
-        criteria = process_search_string(search_string, settings)
-        data = []
-        for r in DB[cname].find(criteria, projection=projection):
-            x = _get_val(xaxis, r, None)
-            y = _get_val(yaxis, r, None)
-            if x and y:
-                data.append([x, y])
-    else:
-        data = []
-    return jsonify(jsanitize(data))
 
 
 @app.route("/<string:collection_name>/unique_ids")

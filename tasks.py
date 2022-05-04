@@ -6,16 +6,12 @@
 Deployment file to facilitate releases.
 Note that this file is meant to be run from the root directory.
 """
-import glob
 import os
 import json
-import webbrowser
 import requests
 import re
-import subprocess
 from invoke import task
 
-from monty.os import cd
 from flamyngo import __version__ as ver
 
 
@@ -28,15 +24,14 @@ def publish(ctx):
 
 @task
 def setver(ctx):
-    ctx.run("sed s/version=.*,/version=\\\"{}\\\",/ setup.py > newsetup"
-          .format(ver))
+    ctx.run(f"sed s/version=.*,/version=\\\"{ver}\\\",/ setup.py > newsetup")
     ctx.run("mv newsetup setup.py")
 
 
 @task
 def merge_stable(ctx):
     ctx.run("git add .")
-    ctx.run("git commit -a -m \"v%s release\"" % ver)
+    ctx.run(f"git commit -a -m \"v{ver} release\"")
     ctx.run("git push")
 
 
@@ -49,9 +44,9 @@ def release_github(ctx):
     toks = desc.split("\n")
     desc = "\n".join(toks[1:]).strip()
     payload = {
-        "tag_name": "v" + ver,
+        "tag_name": f"v{ver}",
         "target_commitish": "master",
-        "name": "v" + ver,
+        "name": f"v{ver}",
         "body": desc,
         "draft": False,
         "prerelease": False
