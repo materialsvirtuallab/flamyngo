@@ -304,7 +304,7 @@ def plot():
             active_collection=cname,
             collections=CNAMES,
             app_title=APP_TITLE,
-            graphJSON=graphJSON
+            graphJSON=graphJSON,
         )
     )
 
