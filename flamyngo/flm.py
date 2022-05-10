@@ -50,7 +50,7 @@ def main():
         dest="config",
         type=str,
         nargs="?",
-        default=os.path.join(os.path.expanduser('~'), ".flamyngo.yaml"),
+        default=os.path.join(os.path.expanduser("~"), ".flamyngo.yaml"),
         help="YAML file where the config is stored",
     )
     parser.add_argument(
