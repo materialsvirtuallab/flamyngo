@@ -41,7 +41,7 @@ CONN = MongoClient(connect_string)
 DB = CONN[DB_SETTINGS["database"]]
 
 CNAMES = [
-    f'{d["name"]}:{DB[d["name"]].count_documents({})}' for d in SETTINGS["collections"]
+    f'{d["name"]}:0' for d in SETTINGS["collections"]
 ]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
