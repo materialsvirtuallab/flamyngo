@@ -40,9 +40,7 @@ else:
 CONN = MongoClient(connect_string)
 DB = CONN[DB_SETTINGS["database"]]
 
-CNAMES = [
-    f'{d["name"]}:0' for d in SETTINGS["collections"]
-]
+CNAMES = [f'{d["name"]}:0' for d in SETTINGS["collections"]]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
 AUTH_PASSWD = SETTINGS.get("AUTH_PASSWD", None)
