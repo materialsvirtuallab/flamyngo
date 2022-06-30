@@ -30,8 +30,10 @@ if "connection_string" in DB_SETTINGS:
     connect_string = DB_SETTINGS["connection_string"]
 else:
     if "username" in DB_SETTINGS:
-        connect_string = f'mongodb://{DB_SETTINGS["username"]}:{DB_SETTINGS["password"]}@' \
-                         f'{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
+        connect_string = (
+            f'mongodb://{DB_SETTINGS["username"]}:{DB_SETTINGS["password"]}@'
+            f'{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
+        )
     else:
         connect_string = f'mongodb://{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
 
@@ -39,8 +41,7 @@ CONN = MongoClient(connect_string)
 DB = CONN[DB_SETTINGS["database"]]
 
 CNAMES = [
-    f'{d["name"]}:{DB[d["name"]].count_documents({})}'
-    for d in SETTINGS["collections"]
+    f'{d["name"]}:{DB[d["name"]].count_documents({})}' for d in SETTINGS["collections"]
 ]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
 AUTH_USER = SETTINGS.get("AUTH_USER", None)
