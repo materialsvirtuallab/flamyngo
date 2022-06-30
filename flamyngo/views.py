@@ -24,13 +24,18 @@ APP_TITLE = SETTINGS.get("title", "Flamyngo")
 HELPTXT = SETTINGS.get("help", "")
 TEMPLATE_FOLDER = SETTINGS.get("template_folder", "templates")
 
-if "connection_string" in SETTINGS["db"]:
-    CONN = MongoClient(SETTINGS["db"]["connection_string"])
+DB_SETTINGS = SETTINGS["db"]
+
+if "connection_string" in DB_SETTINGS:
+    connect_string = DB_SETTINGS["connection_string"]
 else:
-    CONN = MongoClient(SETTINGS["db"]["host"], SETTINGS["db"]["port"], connect=False)
-DB = CONN[SETTINGS["db"]["database"]]
-if "username" in SETTINGS["db"]:
-    DB.authenticate(SETTINGS["db"]["username"], SETTINGS["db"]["password"])
+    if "username" in DB_SETTINGS:
+        connect_string = f'mongodb://{DB_SETTINGS["username"]}:{DB_SETTINGS["password"]}@{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
+    connect_string = f'mongodb://{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
+
+CONN = MongoClient(connect_string)
+DB = CONN[DB_SETTINGS["database"]]
+
 CNAMES = [
     "%s:%d" % (d["name"], DB[d["name"]].count_documents({}))
     for d in SETTINGS["collections"]
