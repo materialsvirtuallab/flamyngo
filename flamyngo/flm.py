@@ -17,7 +17,7 @@ def run_server(args):
     Run server
     """
     os.environ["FLAMYNGO"] = args.config
-    from flamyngo.app import app
+    from flamyngo.app import app, SETTINGS
 
     if args.browser:
         from multiprocessing import Process

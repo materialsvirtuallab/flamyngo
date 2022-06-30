@@ -440,5 +440,17 @@ def _search_dict(dictionary, substr):
     return result
 
 
+if "additional_endpoints" in SETTINGS:
+    for rule, endpoint in SETTINGS["additional_endpoints"].items():
+        print(f"adding {rule}")
+        toks = endpoint.rsplit(".", 1)
+        if len(toks) == 1:
+            func = globals()["__builtins__"][toks[0]]
+        else:
+            mod = __import__(toks[0], globals(), locals(), [toks[1]], 0)
+            func = getattr(mod, toks[1])
+        app.add_url_rule(rule, view_func=func)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
