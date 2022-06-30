@@ -442,7 +442,6 @@ def _search_dict(dictionary, substr):
 
 if "additional_endpoints" in SETTINGS:
     for rule, endpoint in SETTINGS["additional_endpoints"].items():
-        print(f"adding {rule}")
         toks = endpoint.rsplit(".", 1)
         if len(toks) == 1:
             func = globals()["__builtins__"][toks[0]]

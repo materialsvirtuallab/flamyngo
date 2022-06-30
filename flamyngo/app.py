@@ -14,4 +14,3 @@ else:
     app = Flask(__name__)
 
 from . import views  # pylint: disable=C0413
-
