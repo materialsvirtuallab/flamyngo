@@ -30,14 +30,15 @@ if "connection_string" in DB_SETTINGS:
     connect_string = DB_SETTINGS["connection_string"]
 else:
     if "username" in DB_SETTINGS:
-        connect_string = f'mongodb://{DB_SETTINGS["username"]}:{DB_SETTINGS["password"]}@{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
+        connect_string = f'mongodb://{DB_SETTINGS["username"]}:{DB_SETTINGS["password"]}@' \
+                         f'{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
     connect_string = f'mongodb://{DB_SETTINGS["host"]}:{DB_SETTINGS["port"]}/{DB_SETTINGS["database"]}'
 
 CONN = MongoClient(connect_string)
 DB = CONN[DB_SETTINGS["database"]]
 
 CNAMES = [
-    "%s:%d" % (d["name"], DB[d["name"]].count_documents({}))
+    f'{d["name"]}:{DB[d["name"]].count_documents()}'
     for d in SETTINGS["collections"]
 ]
 CSETTINGS = {d["name"]: d for d in SETTINGS["collections"]}
@@ -100,7 +101,7 @@ def process_search_string_regex(search_string, settings):
     """
     criteria = {}
     for regex in settings["query"]:
-        if re.match(r"%s" % regex[1], search_string):
+        if re.match(regex[1], search_string):
             criteria[regex[0]] = {"$regex": str(process(search_string, regex[2]))}
             break
     if not criteria:
@@ -119,7 +120,7 @@ def process_search_string(search_string, settings):
     """
     criteria = {}
     for regex in settings["query"]:
-        if re.match(r"%s" % regex[1], search_string):
+        if re.match(regex[1], search_string):
             criteria[regex[0]] = process(search_string, regex[2])
             break
     if not criteria:
@@ -163,7 +164,7 @@ def autocomplete():
 
         # if search looks like a special query, autocomplete values
         for regex in settings["query"]:
-            if re.match(r"%s" % regex[1], search_string):
+            if re.match(regex[1], search_string):
                 criteria[regex[0]] = {"$regex": str(process(search_string, regex[2]))}
                 projection = {regex[0]: 1}
 
