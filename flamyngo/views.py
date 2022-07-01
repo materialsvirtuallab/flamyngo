@@ -208,6 +208,7 @@ def query():
     try:
         if search_string.strip() != "":
             criteria = process_search_string(search_string, settings)
+            criteria.update(settings.get("filter_criteria", {}))
             results = []
             for r in DB[cname].find(criteria, projection=projection):
                 processed = []

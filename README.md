@@ -106,6 +106,11 @@ collections:
     unique_key: _id
     unique_key_type: bson.objectid.ObjectId
     
+    # The following defines a filter criteria that will be applied to all queries.
+    # This allows presenting only a subset of a database.
+    filter_criteria:
+      "valid": true
+
     # The following defines keys to exclude from the doc view.
     # This is sometimes useful (or necessary) to reduce the size of the
     # individual documents being viewed (for very large documents).

@@ -1,5 +1,9 @@
 # Change log
 
+## 1.2.1
+* Support user-specified routes.
+* Support filter_criteria.
+
 ## v1.1.0
 * Switch to using plot.ly for plot construction
 * Support excluding keys from docs
