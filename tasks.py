@@ -1,4 +1,3 @@
-# coding: utf-8
 # Copyright (c) Pymatgen Development Team.
 # Distributed under the terms of the MIT License.
 
@@ -6,10 +5,11 @@
 Deployment file to facilitate releases.
 Note that this file is meant to be run from the root directory.
 """
-import os
 import json
-import requests
+import os
 import re
+
+import requests
 from invoke import task
 
 from flamyngo import __version__ as ver
@@ -24,14 +24,14 @@ def publish(ctx):
 
 @task
 def setver(ctx):
-    ctx.run(f"sed s/version=.*,/version=\\\"{ver}\\\",/ setup.py > newsetup")
+    ctx.run(f'sed s/version=.*,/version=\\"{ver}\\",/ setup.py > newsetup')
     ctx.run("mv newsetup setup.py")
 
 
 @task
 def merge_stable(ctx):
     ctx.run("git add .")
-    ctx.run(f"git commit -a -m \"v{ver} release\"")
+    ctx.run(f'git commit -a -m "v{ver} release"')
     ctx.run("git push")
 
 
@@ -49,13 +49,14 @@ def release_github(ctx):
         "name": f"v{ver}",
         "body": desc,
         "draft": False,
-        "prerelease": False
+        "prerelease": False,
     }
-    
+
     response = requests.post(
         "https://api.github.com/repos/materialsvirtuallab/flamyngo/releases",
         data=json.dumps(payload),
-        headers={"Authorization": "token " + os.environ["GITHUB_RELEASES_TOKEN"]})
+        headers={"Authorization": "token " + os.environ["GITHUB_RELEASES_TOKEN"]},
+    )
     print(response.text)
 
 

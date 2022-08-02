@@ -1,4 +1,3 @@
-# coding: utf-8
 # Copyright (c) Materials Virtual Lab.
 # Distributed under the terms of the BSD License.
 
@@ -17,7 +16,7 @@ def run_server(args):
     Run server
     """
     os.environ["FLAMYNGO"] = args.config
-    from flamyngo.app import app, SETTINGS
+    from flamyngo.app import app
 
     if args.browser:
         from multiprocessing import Process
