@@ -7,7 +7,6 @@ import os
 import re
 from functools import wraps
 
-from ruamel.yaml import YAML
 import pandas as pd
 import plotly
 import plotly.express as px
@@ -16,6 +15,7 @@ from flask.json import jsonify
 from monty.json import jsanitize
 from monty.serialization import loadfn
 from pymongo import MongoClient
+from ruamel.yaml import YAML
 
 from flamyngo.app import app
 
