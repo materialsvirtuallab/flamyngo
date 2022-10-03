@@ -1,7 +1,7 @@
 # Flamyngo
 
-Flamyngo is a YAML-powered Flask frontend for MongoDB. The aim is to delegate 
-most settings to a YAML configuration file, which then allows the  underlying 
+Flamyngo is a YAML-powered Flask frontend for MongoDB. The aim is to delegate
+most settings to a YAML configuration file, which then allows the  underlying
 code to be reused for any conceivable collection. The official web page is at
 https://materialsvirtuallab.github.io/flamyngo/.
 
@@ -70,14 +70,14 @@ collections:
     # regex should be uniquely identifying.
     # Types can be any kind of callable function that takes in a string and return
     # a value without other arguments. E.g., int, str, float, etc. You can support
-    # more powerful conversions by writing your own processing function, e.g., 
-    # mymodule.convert_degress_to_radians. 
+    # more powerful conversions by writing your own processing function, e.g.,
+    # mymodule.convert_degress_to_radians.
     # If none of the regex works, the criteria is interpreted as a Mongo-like dict query.
     query:
       - [last_name, '^[A-Za-z]+$', str]
       - [phone_number, '^[0-9]+$', int]
 
-    # A default list of projection key, processing function to display as a table. 
+    # A default list of projection key, processing function to display as a table.
     # Again, processing function can be any callable, and you can define your own.
     # You can also supply any Python formatting string (starts with %) as the processing
     # function. For example, "%.1f" would format that quantity as a float with one
@@ -88,7 +88,7 @@ collections:
       - [last_name, str]
       - [phone_number, str]
       - [age, "%d"]
-        
+
     # Aliases for various fields. These are used to display short names in the summary
     # table. You can also directly perform queries using the short names instead of
     # using the long names.
@@ -105,7 +105,7 @@ collections:
     # unique document.
     unique_key: _id
     unique_key_type: bson.objectid.ObjectId
-    
+
     # The following defines a filter criteria that will be applied to all queries.
     # This allows presenting only a subset of a database.
     filter_criteria:
@@ -131,7 +131,7 @@ API_KEY: IamPink
 Assuming that you are running on local host at port 5000, the initial
 landing page will be at http://localhost:5000.
 
-Pages for individual docs following the format 
+Pages for individual docs following the format
 http://localhost:5000/[collection_name]/doc/[unique_id].
 
 # REST API
