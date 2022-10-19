@@ -21,7 +21,7 @@ $(function() {
     $("#query-input").autocomplete({
         source:function(request, response) {
             $.getJSON("{{url_for('autocomplete')}}",{
-                term: request.term, 
+                term: request.term,
                 collection : $("#select-collection").val(),
             }, function(data) {
                 response(data.matching_results); // matching_results from jsonify
