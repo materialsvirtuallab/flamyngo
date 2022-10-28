@@ -1,12 +1,9 @@
-# coding: utf-8
 # Copyright (c) Materials Virtual Lab
 # Distributed under the terms of the BSD License.
 
-import glob
 import os
-from io import open
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 SETUP_PTH = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,10 +21,9 @@ Detailed usage instructions are available at the project's `Github page
 setup(
     name="flamyngo",
     packages=find_packages(),
-    version="0.10.6",
+    version="1.2.1",
     install_requires=["flask", "pyyaml", "monty>=0.7.0", "pymongo"],
-    package_data={"flamyngo": ["static/*.*", "static/js/*.*",
-                               "templates/*"]},
+    package_data={"flamyngo": ["static/*.*", "static/js/*.*", "templates/*"]},
     author="Shyue Ping Ong",
     author_email="ongsp@eng.ucsd.edu",
     maintainer="Shyue Ping Ong",
@@ -38,19 +34,13 @@ setup(
     long_description=long_desc,
     keywords=["flask", "web", "frontend", "gui", "MongoDB"],
     classifiers=[
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent"
+        "Operating System :: OS Independent",
     ],
-    entry_points={
-          'console_scripts': [
-              'flm = flamyngo.flm:main'
-          ]
-    }
+    entry_points={"console_scripts": ["flm = flamyngo.flm:main"]},
 )
