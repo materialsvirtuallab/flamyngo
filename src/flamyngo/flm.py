@@ -68,7 +68,7 @@ def main():
         dest="host",
         type=str,
         nargs="?",
-        default="0.0.0.0",
+        default="0.0.0.0",  # noqa:S104
         help="Host in which to run the server. Defaults to 0.0.0.0.",
     )
     parser.add_argument(
