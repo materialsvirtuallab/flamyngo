@@ -1,5 +1,5 @@
 Flask==3.0.3
 ruamel.yaml==0.18.10
-monty==2024.7.30
+monty==2025.3.3
 pymongo==4.8.0
 plotly==6.0.1
