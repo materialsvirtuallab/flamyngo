@@ -1,9 +1,9 @@
 # Copyright (c) Materials Virtual Lab.
 # Distributed under the terms of the BSD License.
 
-"""
-Main flask app for Flamyngo
-"""
+"""Main flask app for Flamyngo."""
+
+from __future__ import annotations
 
 import argparse
 import os
@@ -12,9 +12,7 @@ import webbrowser
 
 
 def run_server(args):
-    """
-    Run server
-    """
+    """Run server."""
     os.environ["FLAMYNGO"] = args.config
     from flamyngo.app import app
 
@@ -34,9 +32,7 @@ def run_server(args):
 
 
 def main():
-    """
-    Process args
-    """
+    """Process args."""
     parser = argparse.ArgumentParser(
         description="""flamyngo is a basic Flask frontend for querying
         MongoDB collections.""",

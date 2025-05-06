@@ -5,6 +5,9 @@
 Deployment file to facilitate releases.
 Note that this file is meant to be run from the root directory.
 """
+
+from __future__ import annotations
+
 import json
 import os
 import re

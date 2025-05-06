@@ -30,7 +30,6 @@ keywords=["flask", "web", "frontend", "gui", "MongoDB"]
 [project.urls]
 Homepage = "https://github.com/materialsvirtuallab/flamyngo"
 
-
 [project.optional-dependencies]
 
 [project.scripts]
