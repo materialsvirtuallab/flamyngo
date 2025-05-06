@@ -1,0 +1,219 @@
+[project]
+name = "flamyngo"
+version = "1.2.1"
+description = "Flamyngo is a customizable Flask frontend for MongoDB."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "flask>=3.1.0",
+    "monty>=2025.3.3",
+    "plotly>=6.0.1",
+    "ruamel-yaml>=0.18.10",
+]
+authors = [{ name = "Shyue Ping Ong", email = "ongsp@ucsd.edu" }]
+license = { text = "BSD" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords=["flask", "web", "frontend", "gui", "MongoDB"]
+
+[project.urls]
+Homepage = "https://github.com/materialsvirtuallab/flamyngo"
+
+
+[project.optional-dependencies]
+
+[project.scripts]
+flm = "flamyngo.flm:main"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["flamyngo"]
+
+[tool.setuptools.package-data]
+"flamyngo" = ["static/*.*", "static/js/*.*", "templates/*"]
+
+[tool.cibuildwheel.macos]
+repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel} --ignore-missing-dependencies"
+
+[tool.ruff]
+line-length = 120
+output-format = "concise"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    # Rule families
+    "ANN", # flake8-annotations (not ready, require types for ALL args)
+    "ARG", # Check for unused function arguments
+    "BLE", # General catch of Exception
+    "C90", # Check for functions with a high McCabe complexity
+    "COM", # flake8-commas (conflict with line wrapper)
+    "CPY", # Missing copyright notice at top of file (need preview mode)
+    "EM", # Format nice error messages
+    "ERA", # Check for commented-out code
+    "FIX", # Check for FIXME, TODO and other developer notes
+    "G", # Validate logging format strings
+    "INP", # Ban PEP-420 implicit namespace packages
+    "N", # PEP8-naming (many var/arg names are intended)
+    "PTH", # Prefer pathlib over os.path
+    "SLF", # Access "private" class members
+    "T20", # Check for print/pprint
+    "TD", # TODO tags related
+
+    # Single rules
+    "B023", # Function definition does not bind loop variable
+    "B904", # Within an except clause, raise exceptions with ...
+    "C408", # unnecessary-collection-call
+    "D105", # Missing docstring in magic method
+    "D205", # One blank line required between summary line and description
+    "D212", # Multi-line docstring summary should start at the first line
+    "FBT001", # Boolean-typed positional argument in function definition
+    "FBT002", # Boolean default positional argument in function
+    "PD011", # (A lot of false positive on non-Pandas objects)
+    "PERF203", # Use of try-except in for/while loop
+    "PERF401", # Replace "for" loops with list comprehension
+    "PLR0911", # Too many return statements
+    "PLR0912", # Too many branches
+    "PLR0913", # Too many arguments
+    "PLR0915", # Too many statements
+    "PLR1702", # Too many nested blocks
+    "PLR2004", # Magic-value-comparison TODO: fix these
+    "PLW2901", # Outer for loop variable overwritten by inner assignment target
+    "PT013", # Incorrect import of pytest
+    "S110", # Log for try-except-pass
+    "S112", # Log for try-except-continue
+    "S311", # Use random module for cryptographic purposes
+    "S314", # Replace xml with defusedxml to avoid XML attacks
+    "S603", # Check source for use of "subprocess" call
+    "S607", # Start process with relative path
+    "SIM105", # Use contextlib.suppress() instead of try-except-pass
+    "SIM905", # Split static strings
+    "TRY003", # Avoid specifying long messages outside the exception class
+    "TRY300", # Check for return statements in try blocks
+    "TRY301", # Check for raise statements within try blocks
+]
+pydocstyle.convention = "google"
+isort.required-imports = ["from __future__ import annotations"]
+isort.split-on-trailing-comma = false
+isort.known-first-party = ["flamyngo"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # unused-import
+"tests/**" = [
+    "ANN201", # missing-return-type-undocumented-public-function
+    "D", # pydocstyle
+    "PLR0124", # comparison-with-itself
+    "PLR2004", # magic-value-comparison
+    "PLR6301", # no-self-use
+    "S101", # Use of "assert"
+]
+
+[tool.pytest.ini_options]
+addopts = "--durations=30 --quiet -r xXs --color=yes --import-mode=importlib"
+filterwarnings = [
+    # NOTE: the LAST matching option would be used
+    "ignore::UserWarning", # Ignore UserWarning
+    "error:We strongly encourage explicit `encoding`:EncodingWarning", # Mark `zopen` EncodingWarning as error
+    "error:We strongly discourage using implicit binary/text:FutureWarning", # Mark `zopen` FutureWarning as error
+    # TODO: remove the following filter once `monty.io` dropped custom EncodingWarning
+    "error:We strongly encourage explicit `encoding`:monty.io.EncodingWarning",
+    # TODO: pybtex (perhaps some others) emits the following warnings
+    'ignore:pkg_resources is deprecated as an API:DeprecationWarning',
+    'ignore:distutils Version classes are deprecated:DeprecationWarning',
+    'ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning',
+]
+
+[tool.coverage.run]
+parallel = true
+omit = [
+    "flamyngo/cli/feff_*.py",
+    "flamyngo/cli/pmg_config.py",
+    "flamyngo/cli/pmg_plot.py",
+    "flamyngo/cli/pmg_potcar.py",
+    "flamyngo/dao.py",
+]
+
+[tool.coverage.report]
+exclude_also = [
+    "@deprecated",
+    "def __repr__",
+    "except ImportError:",
+    "if TYPE_CHECKING:",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "show_plot",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+namespace_packages = true
+no_implicit_optional = false
+disable_error_code = ["annotation-unchecked", "override", "operator", "attr-defined", "union-attr", "misc", "call-overload", "call-arg"] #, "operator", "arg-type", "index", "call-arg", "return-value", "assignment", "attr-defined"]
+exclude = ['src/flamyngo/analysis', 'src/flamyngo/io', 'src/flamyngo/cli', 'src/flamyngo/phonon']
+plugins = ["numpy.typing.mypy_plugin"]
+
+[[tool.mypy.overrides]]
+module = ["requests.*", "tabulate.*", "monty.*", "matplotlib.*"]
+ignore_missing_imports = true
+
+[tool.codespell]
+# TODO: un-ignore "ist/nd/ot/ontop/CoO" once support file-level ignore with pattern
+ignore-words-list = """Nd, Te, titel, Mater,
+Hart, Lew, Rute, atomate,
+ist, nd, ot, ontop, CoO
+"""
+# TODO: un-skip lammps/test_inputs.py once support block ignore with pattern
+skip = """*.json,
+src/flamyngo/analysis/chemenv/coordination_environments/coordination_geometries_files/allcg.txt,
+src/flamyngo/entries/MPCompatibility.yaml,
+tests/io/lammps/test_inputs.py,
+"""
+check-filenames = true
+
+[tool.pyright]
+typeCheckingMode = "off"
+reportPossiblyUnboundVariable = true
+reportUnboundVariable = true
+reportMissingImports = false
+reportMissingModuleSource = false
+reportInvalidTypeForm = false
+exclude = ["**/tests"]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.0.0",
+    "pytest-split>=0.10.0",
+]
+lint = [
+    "mypy>=1.15.0",
+    "pyright>=1.1.398",
+    "ruff>=0.11.2",
+]
+maintain = [
+    "invoke>=2.2.0",
+    "ruff>=0.11.3",
+    "sphinx>=8.1.3",
+    "sphinx-markdown-builder>=0.6.8",
+    "sphinx-rtd-theme>=3.0.2",
+]
