@@ -216,3 +216,6 @@ maintain = [
     "sphinx-markdown-builder>=0.6.8",
     "sphinx-rtd-theme>=3.0.2",
 ]
+
+[tool.uv]
+package = true
