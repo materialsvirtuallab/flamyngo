@@ -1,4 +1,4 @@
-Flask==3.1.0
+Flask==3.1.1
 ruamel.yaml==0.18.10
 monty==2025.3.3
 pymongo==4.12.1
