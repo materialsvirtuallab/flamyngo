@@ -269,7 +269,7 @@ def plot():
     else:
         data = []
 
-    df = pd.DataFrame(data, columns=[xaxis, yaxis])  # noqa: PD901
+    df = pd.DataFrame(data, columns=[xaxis, yaxis])
     fig = px.scatter(df, x=xaxis, y=yaxis) if plot_type == "scatter" else px.bar(df, x=xaxis, y=yaxis)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
