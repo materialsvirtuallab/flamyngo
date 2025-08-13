@@ -6,6 +6,7 @@ import json
 import os
 import re
 from functools import wraps
+from io import StringIO
 
 import pandas as pd
 import plotly
@@ -269,8 +270,8 @@ def plot():
     else:
         data = []
 
-    df = pd.DataFrame(data, columns=[xaxis, yaxis])
-    fig = px.scatter(df, x=xaxis, y=yaxis) if plot_type == "scatter" else px.bar(df, x=xaxis, y=yaxis)
+    plotdf = pd.DataFrame(data, columns=[xaxis, yaxis])
+    fig = px.scatter(plotdf, x=xaxis, y=yaxis) if plot_type == "scatter" else px.bar(plotdf, x=xaxis, y=yaxis)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return make_response(
@@ -337,7 +338,6 @@ def get_doc_yaml(collection_name, uid):
     doc = DB[collection_name].find_one(criteria, projection=projection)
     yml = YAML()
     yml.default_flow_style = False
-    from io import StringIO
 
     s = StringIO()
     yml.dump(jsanitize(doc), s)
